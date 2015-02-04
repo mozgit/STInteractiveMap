@@ -29,11 +29,14 @@ it_d = create_IT()
 histos = {'it':{},'tt':{}}
 
 # Add data in .pkl format
+# Prefered naming of histogram is following <HistoName>_<SectorName>
 pickle_file = 'data/TT_Efficiency_Per_Run.pkl'
 hist_name = 'Efficiency_time_dependence'
 Add_Pkl(tt_d, pickle_file, hist_name,histos)
 
 # Add data as ntuple
+# Prefered naming of histogram is following <HistoName>_<SectorName>
+# Also, you can open data/STTrackMonitor-2012.root in root and see naming by yourself.
 """
 ntuple = 'data/STTrackMonitor-2012.root'
 Add_NTuple(ntuple, it_d, tt_d,histos)
