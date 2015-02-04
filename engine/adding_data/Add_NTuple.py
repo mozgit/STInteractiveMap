@@ -1,4 +1,5 @@
 import pickle
+import os
 from ROOT import *
 from engine.module_based_naming.Alternative_Naming_Triggers import *
 from Add_Histograms import *
@@ -60,6 +61,8 @@ def GetHistosFromNT(f_n):
     return dictionary.keys()
 
 def Add_NTuple(ntuple, it_d, tt_d,hist_coll):
+    if not os.path.exists("engine/adding_data/pickle"):
+        os.system("mkdir engine/adding_data/pickle")
     for h in GetHistosFromNT(ntuple):
         if h[0] == 'T':
             f = open('engine/adding_data/pickle/'+h+".pkl")

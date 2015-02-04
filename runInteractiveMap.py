@@ -34,14 +34,14 @@ hist_name = 'Efficiency_time_dependence'
 Add_Pkl(tt_d, pickle_file, hist_name,histos)
 
 # Add residual, unbiased residual, signal to noise histograms loading from an ntuple
-ntuple = 'data/STTrackMonitor-2012.root'
-Add_NTuple(ntuple, it_d, tt_d,histos)
+#ntuple = 'data/STTrackMonitor-2012.root'
+#Add_NTuple(ntuple, it_d, tt_d,histos)
 
 #For .root file with 
 #Pay attention, that this folder should be in static folder.
 #Names should be given as <Sector/Module name><-Type of histogram, can be optional>.<extension>
-folder_with_plots = 'preloaded_pictures'
-Add_Folder(folder_with_plots, it_d, tt_d,histos)
+#folder_with_plots = 'preloaded_pictures'
+#Add_Folder(folder_with_plots, it_d, tt_d,histos)
 #folder_with_plots = 'PlotsByHalfModule'
 #Add_Folder(folder_with_plots, it_d, tt_d,histos)
 #print json.dumps(it_d,sort_keys=True, indent=4)
@@ -79,15 +79,15 @@ def Detector(d):
     """
     if d in NameList['TTNames']: 
         p_name = Parse_Name(d)
-        return render_template('Sector.html', sec=tt_d[p_name['layer']][p_name['side']][p_name['sector']], histoname = hname)
+        return render_template('Sector.html', sec=tt_d[p_name['layer']][p_name['side']][p_name['sector']])
     if d in NameList['ITNames']: 
         p_name = Parse_Name(d)
-        return render_template('Sector.html', sec=it_d[p_name['station']][p_name['side']][p_name['layer']][p_name['sector']], histoname = hname)
+        return render_template('Sector.html', sec=it_d[p_name['station']][p_name['side']][p_name['layer']][p_name['sector']])
     return redirect(url_for('hello'))
 
 
 # Execute the program
 if __name__ == "__main__":
     Drawing_mode = {'TT_hist':'', 'IT_hist':'','TT_prop':'', 'IT_prop':''}
-    app.debug = False # Disable this when the code is ready!
+    app.debug = True # Disable this when the code is ready!
     app.run(port=5000)
