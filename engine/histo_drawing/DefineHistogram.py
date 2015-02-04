@@ -8,7 +8,6 @@ def GetAPlot(hist,histname):
     """ Looks for a png files. If it is not there,
     it produces it by saving a ROOT histogram  as .png """
     if not os.path.isfile("static/plots/"+histname+".png"):
-        gROOT.ProcessLine(".x lhcbStyle.C")
         gStyle.SetOptStat("emr")
         gStyle.SetPadTopMargin(0.06) 
         c = TCanvas("c","c", 900, 900)

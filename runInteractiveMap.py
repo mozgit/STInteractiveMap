@@ -16,6 +16,9 @@ import json
 # Avoid spawning canvases
 gROOT.SetBatch(kTRUE)
 
+# Make stylish plots
+gROOT.ProcessLine(".x engine/histo_drawing/lhcbStyle.C")
+
 # Prepare a Flask application
 app = Flask(__name__)
 
