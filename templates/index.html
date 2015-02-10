@@ -47,6 +47,12 @@
                             <span> {{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join][i|string]['value'] }}</span>
                         </div>
                     </span>
+                    {% if i == 0 %}
+                            <span style="height:50%;position:absolute;top:15%;left:0%;z-index: 1;">{{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join][i|string]['value'] }}</span>
+                    {% endif %}
+                    {% if i == 99 %}
+                            <span style="height:50%;position:absolute;top:15%;right:0%;z-index: 1;">{{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join][i|string]['value'] }}</span>
+                    {% endif %}
                 {% endfor %}"
             {% endif %}
         {% endif %}

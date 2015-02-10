@@ -12,6 +12,100 @@ def convert_to_hex(rgba_color) :
     blue = int(rgba_color[2]*255)
     return '#{r:02x}{g:02x}{b:02x}'.format(r=red,g=green,b=blue)
 
+def split_number(number):
+    sign = 1
+    integers = ""
+    decimals = ""
+    power = 0
+    if number<0:
+        sign = -1
+    integers = str(abs(number)).split(".")[0]
+    decimals = str(abs(number)).split(".")[1]
+    power = len(integers)-1
+    if abs(number)<1:
+        while (int(number)==0):
+         number *=10
+         power -=1
+    if decimals:
+        while decimals[len(decimals)-1]=='0':
+            decimals = decimals[:-1]
+            if not decimals:
+                break
+    simplified = integers+decimals
+    while simplified[0]=='0':
+        simplified=simplified[1:]
+    return {'sing':sign,'power':power,'digits':simplified}
+
+
+def round_up(number, ndigit):
+    if number<0:
+        return -round_down(-number,ndigit)
+    if ndigit < 1:
+        print "Error in smart schema rounding!"
+        return number
+    simplified = split_number(number)['digits']
+    power = split_number(number)['power']
+    temp = ""
+    if len(simplified)<ndigit:
+        simplified=str(int(simplified)+1)
+        while len(simplified)<ndigit:
+            simplified+='0'
+        for i in range(0, ndigit):
+            temp+=simplified[i]
+        rn = int(temp)+1
+        return float(rn)/10**(len(str(temp))-1)*10**(power)
+    for i in range(0, ndigit):
+        temp+=simplified[i]
+    rn = int(temp)+1
+    return float(rn)/10**(len(str(temp))-1)*10**(power)
+
+def round_down(number, ndigit):
+    if number<0:
+        return -round_down(-number,ndigit)
+    if ndigit < 1:
+        print "Error in smart schema rounding!"
+        return 0
+    simplified = split_number(number)['digits']
+    power = split_number(number)['power']
+    temp = ""
+    if len(simplified)<ndigit:
+        simplified=str(int(simplified)+1)
+        while len(simplified)<ndigit:
+            simplified+='0'
+        for i in range(0, ndigit):
+            temp+=simplified[i]
+        rn = int(temp)-1
+        return float(rn)/10**(len(str(temp))-1)*10**(power)
+    for i in range(0, ndigit):
+        temp+=simplified[i]
+    rn = int(temp)-1
+    return float(rn)/10**(len(str(temp))-1)*10**(power)
+
+
+
+def smart_interval(min_l, max_l, ndigit):
+    if (min_l<0) and (max_l<0):
+        return [-smart_interval(-max_l,-min_l,ndigit)[1],-smart_interval(-max_l,-min_l,ndigit)[0]]
+    d_min = split_number(min_l)['digits']
+    d_max = split_number(max_l)['digits']
+    p_min = split_number(min_l)['power']
+    p_max = split_number(max_l)['power']
+    if (min_l<0) and (max_l>0):
+        return [-round_up(max(max_l,-min_l),2),round_up(max(max_l,-min_l),2)]
+
+    d_pow = p_max-p_min
+    if d_pow!=0:
+        for i in range(0, d_pow):
+            d_min = '0'+d_min
+    counter = 0
+    i = 0
+    while counter<ndigit:
+        if d_max[i]!=d_min[i]:
+            counter+=1
+        i+=1
+    return [round_down(min_l,i-d_pow),round_up(max_l,i)]
+
+
 def Normalize_Colours(tt_d, it_d):
     collection = {}
     cmap = cm.PiYG
@@ -48,14 +142,15 @@ def Normalize_Colours(tt_d, it_d):
                                                 collection['it_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
                                             collection['it_d'+hist+prop]['vals'].append(it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop])
     for coll in collection:
-        collection[coll]['min']=min(collection[coll]['vals'])
-        collection[coll]['max']=max(collection[coll]['vals'])
+        collection[coll]['min']=smart_interval(min(collection[coll]['vals']),max(collection[coll]['vals']),2)[0]
+        collection[coll]['max']=smart_interval(min(collection[coll]['vals']),max(collection[coll]['vals']),2)[1]
         norm = mpl.colors.Normalize(vmin=collection[coll]['min'], vmax=collection[coll]['max'])
         m = cm.ScalarMappable(norm=norm, cmap=cmap)
         for i in range(0,100):
             collection[coll][str(i)] = {}
             collection[coll][str(i)]['colour'] = convert_to_hex(m.to_rgba(collection[coll]['min'] + float(i)/100.*(collection[coll]['max']-collection[coll]['min'])))
             collection[coll][str(i)]['value'] = str(collection[coll]['min'] + float(i)/100.*(collection[coll]['max']-collection[coll]['min']))
+        collection[coll]['99']['value'] = str(collection[coll]['max']) 
     #print json.dumps(collection,sort_keys=True, indent=4)
     for layer in tt_d:
         for side in tt_d[layer]:
