@@ -31,24 +31,24 @@ def hist_sigma(hist):
     return hist.GetRMS()
 
 def Y_mean(hist):
-    hist.Fit("pol0")
-    f = hist.GetFunction("pol0","q") #q - to make fit silent
+    hist.Fit("pol0","q") #q - to make fit silent
+    f = hist.GetFunction("pol0")
     try:
         return f.GetParameter(0)
     except:
         return 0
 
 def slope(hist):
-    hist.Fit("pol1")
-    f = hist.GetFunction("pol1","q") #q - to make fit silent
+    hist.Fit("pol1","q") #q - to make fit silent
+    f = hist.GetFunction("pol1")
     try:
         return f.GetParameter(1)
     except:
         return 0
 
 def chi2_lin(hist):
-    hist.Fit("pol1")
-    f = hist.GetFunction("pol1","q") #q - to make fit silent
+    hist.Fit("pol1","q") #q - to make fit silent
+    f = hist.GetFunction("pol1")
     try:
         return f.GetChisquare()
     except:
