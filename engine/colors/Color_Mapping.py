@@ -28,11 +28,12 @@ def Normalize_Colours(tt_d, it_d):
             if side not in ["layer_info"]:
                 for sector in tt_d[layer][side]:
                     if sector not in ["side_info"]:
-                        for hist in tt_d[layer][side][sector]['Histograms']:
-                            for prop in tt_d[layer][side][sector]['Histograms'][hist]['properties']:
-                                if 'tt_d'+hist+prop not in collection:
-                                    collection['tt_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
-                                collection['tt_d'+hist+prop]['vals'].append(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop])
+                        if tt_d[layer][side][sector]['is_masked'] == False:
+                            for hist in tt_d[layer][side][sector]['Histograms']:
+                                for prop in tt_d[layer][side][sector]['Histograms'][hist]['properties']:
+                                    if 'tt_d'+hist+prop not in collection:
+                                        collection['tt_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
+                                    collection['tt_d'+hist+prop]['vals'].append(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop])
     for station in it_d:
         for side in it_d[station]:
             if side not in ["station_info"]:
@@ -40,11 +41,12 @@ def Normalize_Colours(tt_d, it_d):
                     if layer not in ["side_info"]:
                         for sector in it_d[station][side][layer]:
                             if sector not in ["layer_info"]:
-                                for hist in it_d[station][side][layer][sector]['Histograms']:
-                                    for prop in it_d[station][side][layer][sector]['Histograms'][hist]['properties']:
-                                        if 'it_d'+hist+prop not in collection:
-                                            collection['it_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
-                                        collection['it_d'+hist+prop]['vals'].append(it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop])
+                                if it_d[station][side][layer][sector]['is_masked'] == False:
+                                    for hist in it_d[station][side][layer][sector]['Histograms']:
+                                        for prop in it_d[station][side][layer][sector]['Histograms'][hist]['properties']:
+                                            if 'it_d'+hist+prop not in collection:
+                                                collection['it_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
+                                            collection['it_d'+hist+prop]['vals'].append(it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop])
     for coll in collection:
         collection[coll]['min']=min(collection[coll]['vals'])
         collection[coll]['max']=max(collection[coll]['vals'])
@@ -62,9 +64,12 @@ def Normalize_Colours(tt_d, it_d):
                     if sector not in ["side_info"]:
                         for hist in tt_d[layer][side][sector]['Histograms']:
                             for prop in tt_d[layer][side][sector]['Histograms'][hist]['properties']:
-                                norm = mpl.colors.Normalize(vmin=collection['tt_d'+hist+prop]['min'], vmax=collection['tt_d'+hist+prop]['max'])
-                                m = cm.ScalarMappable(norm=norm, cmap=cmap)
-                                tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop]))
+                                if tt_d[layer][side][sector]['is_masked'] == False:
+                                    norm = mpl.colors.Normalize(vmin=collection['tt_d'+hist+prop]['min'], vmax=collection['tt_d'+hist+prop]['max'])
+                                    m = cm.ScalarMappable(norm=norm, cmap=cmap)
+                                    tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop]))
+                                else:
+                                    tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop] = "#000000"
                                 #print m.to_rgba(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop],bytes=True)
     for station in it_d:
         for side in it_d[station]:
@@ -75,8 +80,11 @@ def Normalize_Colours(tt_d, it_d):
                             if sector not in ["layer_info"]:
                                 for hist in it_d[station][side][layer][sector]['Histograms']:
                                     for prop in it_d[station][side][layer][sector]['Histograms'][hist]['properties']:
-                                        norm = mpl.colors.Normalize(vmin=collection['it_d'+hist+prop]['min'], vmax=collection['it_d'+hist+prop]['max'])
-                                        m = cm.ScalarMappable(norm=norm, cmap=cmap)
-                                        it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop]))
+                                        if it_d[station][side][layer][sector]['is_masked'] == False:
+                                            norm = mpl.colors.Normalize(vmin=collection['it_d'+hist+prop]['min'], vmax=collection['it_d'+hist+prop]['max'])
+                                            m = cm.ScalarMappable(norm=norm, cmap=cmap)
+                                            it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop]))
+                                        else:
+                                            it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop] = "#000000"
     return collection
 

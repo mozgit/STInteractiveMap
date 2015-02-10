@@ -3,6 +3,7 @@ from flask import render_template
 from flask import abort, redirect, url_for, request, flash
 from ROOT import *
 from engine.detectors.CreateDetectors import *
+from engine.detectors.Mask_sector import *
 from engine.adding_data.Add_Folder import *
 from engine.adding_data.Add_Pkl import *
 from engine.adding_data.Add_NTuple import *
@@ -28,11 +29,22 @@ tt_d = create_TT()
 it_d = create_IT()
 histos = {'it':{},'tt':{}}
 
+#Mask sectors
+#Add sectors you want to mask to the dead_sector list
+dead_sector = ['IT1BottomX2Sector7', 'IT3TopX1Sector7']
+for d_s in dead_sector:
+    mask_sector(it_d, tt_d, d_s)
+
 # Add data in .pkl format
 # Prefered naming of histogram is following <HistoName>_<SectorName>
 pickle_file = 'data/TT_Efficiency_Per_Run.pkl'
 hist_name = 'Efficiency_time_dependence'
 Add_Pkl(tt_d, pickle_file, hist_name,histos)
+
+pickle_file = 'data/IT_Efficiency_Per_Run.pkl'
+hist_name = 'Efficiency_time_dependence'
+Add_Pkl(it_d, pickle_file, hist_name,histos)
+
 
 # Add data as ntuple
 # Prefered naming of histogram is following <HistoName>_<SectorName>
