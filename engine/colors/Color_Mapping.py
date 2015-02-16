@@ -86,6 +86,9 @@ def round_down(number, ndigit):
 
 
 def smart_interval(min_l, max_l, ndigit):
+    if min_l == max_l:
+        return [min_l, max_l]
+
     if (min_l<0) and (max_l<0):
         return [-smart_interval(-max_l,-min_l,ndigit)[1],-smart_interval(-max_l,-min_l,ndigit)[0]]
     d_min = split_number(min_l)['digits']
@@ -114,7 +117,7 @@ def smart_interval(min_l, max_l, ndigit):
         if d_max[i]!=d_min[i]:
             counter+=1
         i+=1
-    print "("+str(min_l)+", "+str(max_l)+") ="+str(i)+"=> ("+str(round_down(min_l,i-d_pow))+", "+str(round_up(max_l,i))+")"
+    #print "("+str(min_l)+", "+str(max_l)+") ="+str(i)+"=> ("+str(round_down(min_l,i-d_pow))+", "+str(round_up(max_l,i))+")"
     return [round_down(min_l,i-d_pow),round_up(max_l,i)]
 
 
