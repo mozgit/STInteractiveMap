@@ -14,7 +14,7 @@ def create_TT():
         for si in side:
             TT[l][si]={'side_info': TT_side_info(l,si)}
             for s in TT_reg_len(l,si):
-                Info = {'Name':l+si+'Sector'+str(s), 'div_info':TT_div_info(l,si,s),'Histograms':{}}
+                Info = {'Name':l+si+'Sector'+str(s), 'div_info':TT_div_info(l,si,s),'Histograms':{}, 'is_masked':False}
                 #if a+r+'Sector'+str(s) in NameList['TTNames']:
                 TT[l][si][str(s)] = Info
                     #print a+r+'Sector'+str(s)
@@ -35,7 +35,7 @@ def create_IT():
             for l in layer:
                 IT[st][s][l]={'layer_info':IT_layer_info(st,s,l)}
                 for n in range(1,8):
-                    Info = {'Name':st+s+l+'Sector'+str(n), 'div_info':IT_div_info(st,s,l,n),'Histograms':{}}
+                    Info = {'Name':st+s+l+'Sector'+str(n), 'div_info':IT_div_info(st,s,l,n),'Histograms':{}, 'is_masked':False}
                     IT[st][s][l][str(n)]=Info
     return IT
 
