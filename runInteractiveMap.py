@@ -48,14 +48,29 @@ pickle_file = 'data/IT_Efficiency_Per_Run.pkl'
 hist_name = 'Efficiency_time_dependence'
 Add_Pkl(it_d, pickle_file, hist_name,histos)
 
+pickle_file = 'data/datetime_IT_Efficiency_Per_Run.pkl'
+hist_name = 'DT_Efficiency_time_dependence'
+Add_Pkl(it_d, pickle_file, hist_name,histos)
+
+pickle_file = 'data/datetime_TT_Efficiency_Per_Run.pkl'
+hist_name = 'DT_Efficiency_time_dependence'
+Add_Pkl(tt_d, pickle_file, hist_name,histos)
+
+pickle_file = 'data/alignment_IT_Efficiency_Per_Run.pkl'
+hist_name = 'alignment_Efficiency_time_dependence'
+Add_Pkl(it_d, pickle_file, hist_name,histos)
+
+pickle_file = 'data/alignment_TT_Efficiency_Per_Run.pkl'
+hist_name = 'alignment_Efficiency_time_dependence'
+Add_Pkl(tt_d, pickle_file, hist_name,histos)
 
 # Add data as ntuple
 # Prefered naming of histogram is following <HistoName>_<SectorName>
 # Also, you can open data/STTrackMonitor-2012.root in root and see naming by yourself.
-"""
-ntuple = 'data/STTrackMonitor-2012.root'
-Add_NTuple(ntuple, it_d, tt_d,histos)
-"""
+
+#ntuple = 'data/STTrackMonitor-2012.root'
+#Add_NTuple(ntuple, it_d, tt_d,histos)
+
 
 #Add preloaded pctures
 #Pay attention, that this folder should be in static folder. (static/<your_folder>)
