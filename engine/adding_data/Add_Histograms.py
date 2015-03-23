@@ -2,6 +2,7 @@ import pickle
 import sys
 from Name_Parser import *
 from engine.histo_drawing.DefineHistogram import GetAPlot
+from engine.detectors.CreateDetectors import *
 """
 This function add histograms to detector.
 """
@@ -21,17 +22,26 @@ def Add_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}})
     for i, k in enumerate(hist_set):
         p_name = Parse_Name(k)
         if k in NameList['TTNames']:
-            det[p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k)
+            det[hist_name]=create_TT()
+            break
+        if k in NameList['ITNames']:
+            det[hist_name]=create_IT()
+            break
+
+    for i, k in enumerate(hist_set):
+        p_name = Parse_Name(k)
+        if k in NameList['TTNames']:
+            det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k)
             if hist_name not in hist_coll['tt']:
                 hist_coll['tt'][hist_name]=[]
-            for pr in det[p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]["properties"]:
+            for pr in det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]["properties"]:
                 if pr not in hist_coll['tt'][hist_name]:
                     hist_coll['tt'][hist_name].append(pr)
         if k in NameList['ITNames']:
-            det[p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k)
+            det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k)
             if hist_name not in hist_coll['it']:
                 hist_coll['it'][hist_name]=[]
-            for pr in det[p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]["properties"]:
+            for pr in det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]["properties"]:
                 if pr not in hist_coll['it'][hist_name]:
                     hist_coll['it'][hist_name].append(pr)
         sys.stdout.flush()
@@ -56,11 +66,11 @@ def Add_Existing_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 
     for i, k in enumerate(hist_set):
         p_name = Parse_Name(k)
         if k in NameList['TTNames']:
-            det[p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]={'plot':hist_set[k], "init_properties":{},'properties':{}}
+            det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]={'plot':hist_set[k], "init_properties":{},'properties':{}}
             if hist_name not in hist_coll['tt']:
                 hist_coll['tt'][hist_name]=[]
         if k in NameList['ITNames']:
-            det[p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]={'plot':hist_set[k], "init_properties":{} ,'properties':{}}
+            det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]={'plot':hist_set[k], "init_properties":{} ,'properties':{}}
             if hist_name not in hist_coll['it']:
                 hist_coll['it'][hist_name]=[]
         sys.stdout.flush()

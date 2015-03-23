@@ -1,6 +1,8 @@
 import matplotlib as mpl
 import matplotlib.cm as cm
-
+import json
+from app import dead_sector
+from engine.detectors.Mask_sector import *
 """
 These functions provide color mapping of a IT/TT according to functions from histograms.
 You can define your own functions at histo_drawing/DefineHistogram.py
@@ -121,9 +123,7 @@ def smart_interval(min_l, max_l, ndigit):
     return [round_down(min_l,i-d_pow),round_up(max_l,i)]
 
 
-def Normalize_Colours(tt_d, it_d):
-    collection = {}
-    cmap = cm.PiYG
+def Normalize_Colours(coll_tt_d,coll_it_d):
     #Create collection of properties:
     #collection = {'tt+hist+property':{
     #                                'vals':[]
@@ -132,30 +132,40 @@ def Normalize_Colours(tt_d, it_d):
     #                                'bin_number':{colour_code, value}
     #                               }}
     #print json.dumps(tt_d,sort_keys=True, indent=4)
-    for layer in tt_d:
-        for side in tt_d[layer]:
-            if side not in ["layer_info"]:
-                for sector in tt_d[layer][side]:
-                    if sector not in ["side_info"]:
-                        if tt_d[layer][side][sector]['is_masked'] == False:
-                            for hist in tt_d[layer][side][sector]['Histograms']:
-                                for prop in tt_d[layer][side][sector]['Histograms'][hist]['properties']:
-                                    if 'tt_d'+hist+prop not in collection:
-                                        collection['tt_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
-                                    collection['tt_d'+hist+prop]['vals'].append(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop])
-    for station in it_d:
-        for side in it_d[station]:
-            if side not in ["station_info"]:
-                for layer in it_d[station][side]:
-                    if layer not in ["side_info"]:
-                        for sector in it_d[station][side][layer]:
-                            if sector not in ["layer_info"]:
-                                if it_d[station][side][layer][sector]['is_masked'] == False:
-                                    for hist in it_d[station][side][layer][sector]['Histograms']:
-                                        for prop in it_d[station][side][layer][sector]['Histograms'][hist]['properties']:
-                                            if 'it_d'+hist+prop not in collection:
-                                                collection['it_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
-                                            collection['it_d'+hist+prop]['vals'].append(it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop])
+    collection = {}
+    cmap = cm.PiYG
+    for d_s in dead_sector:
+        mask_sector(coll_it_d, coll_tt_d, d_s)
+    for hist in coll_tt_d:
+        for layer in coll_tt_d[hist]:
+            if layer not in ["dtype"]:
+                for side in coll_tt_d[hist][layer]:
+                    if side not in ["layer_info"]:
+                        for sector in coll_tt_d[hist][layer][side]:
+                            if sector not in ["side_info"]:
+                                if coll_tt_d[hist][layer][side][sector]['is_masked'] == False:
+                                    #for hist in coll_tt_d[hist][layer][side][sector]['Histograms']:
+                                    if hist in coll_tt_d[hist][layer][side][sector]['Histograms']:
+                                        for prop in coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['properties']:
+                                            if 'tt_d'+hist+prop not in collection:
+                                                collection['tt_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
+                                            collection['tt_d'+hist+prop]['vals'].append(coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['init_properties'][prop])
+    for hist in coll_it_d:
+        for station in coll_it_d[hist]:
+            if station not in ["dtype"]:
+                for side in coll_it_d[hist][station]:
+                    if side not in ["station_info"]:
+                        for layer in coll_it_d[hist][station][side]:
+                            if layer not in ["side_info"]:
+                                for sector in coll_it_d[hist][station][side][layer]:
+                                    if sector not in ["layer_info"]:
+                                        if coll_it_d[hist][station][side][layer][sector]['is_masked'] == False:
+                                            if hist in coll_it_d[hist][station][side][layer][sector]['Histograms']:
+                                                for prop in coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['properties']:
+                                                    if 'it_d'+hist+prop not in collection:
+                                                        collection['it_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
+                                                    collection['it_d'+hist+prop]['vals'].append(coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['init_properties'][prop])
+    #print json.dumps(collection,sort_keys=True, indent=4)
     for coll in collection:
         collection[coll]['min']=smart_interval(min(collection[coll]['vals']),max(collection[coll]['vals']),2)[0]
         collection[coll]['max']=smart_interval(min(collection[coll]['vals']),max(collection[coll]['vals']),2)[1]
@@ -166,35 +176,38 @@ def Normalize_Colours(tt_d, it_d):
             collection[coll][str(i)]['colour'] = convert_to_hex(m.to_rgba(collection[coll]['min'] + float(i)/100.*(collection[coll]['max']-collection[coll]['min'])))
             collection[coll][str(i)]['value'] = str(collection[coll]['min'] + float(i)/100.*(collection[coll]['max']-collection[coll]['min']))
         collection[coll]['99']['value'] = str(collection[coll]['max']) 
-    #print json.dumps(collection,sort_keys=True, indent=4)
-    for layer in tt_d:
-        for side in tt_d[layer]:
-            if side not in ["layer_info"]:
-                for sector in tt_d[layer][side]:
-                    if sector not in ["side_info"]:
-                        for hist in tt_d[layer][side][sector]['Histograms']:
-                            for prop in tt_d[layer][side][sector]['Histograms'][hist]['properties']:
-                                if tt_d[layer][side][sector]['is_masked'] == False:
-                                    norm = mpl.colors.Normalize(vmin=collection['tt_d'+hist+prop]['min'], vmax=collection['tt_d'+hist+prop]['max'])
-                                    m = cm.ScalarMappable(norm=norm, cmap=cmap)
-                                    tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop]))
-                                else:
-                                    tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop] = "#000000"
-                                #print m.to_rgba(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop],bytes=True)
-    for station in it_d:
-        for side in it_d[station]:
-            if side not in ["station_info"]:
-                for layer in it_d[station][side]:
-                    if layer not in ["side_info"]:
-                        for sector in it_d[station][side][layer]:
-                            if sector not in ["layer_info"]:
-                                for hist in it_d[station][side][layer][sector]['Histograms']:
-                                    for prop in it_d[station][side][layer][sector]['Histograms'][hist]['properties']:
-                                        if it_d[station][side][layer][sector]['is_masked'] == False:
-                                            norm = mpl.colors.Normalize(vmin=collection['it_d'+hist+prop]['min'], vmax=collection['it_d'+hist+prop]['max'])
+    for hist in coll_tt_d:
+        for layer in coll_tt_d[hist]:
+            if layer not in ["dtype"]:
+                for side in coll_tt_d[hist][layer]:
+                    if side not in ["layer_info"]:
+                        for sector in coll_tt_d[hist][layer][side]:
+                            if sector not in ["side_info"]:
+                                if hist in coll_tt_d[hist][layer][side][sector]['Histograms']:
+                                    for prop in coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['properties']:
+                                        if coll_tt_d[hist][layer][side][sector]['is_masked'] == False:
+                                            norm = mpl.colors.Normalize(vmin=collection['tt_d'+hist+prop]['min'], vmax=collection['tt_d'+hist+prop]['max'])
                                             m = cm.ScalarMappable(norm=norm, cmap=cmap)
-                                            it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop]))
+                                            coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['init_properties'][prop]))
                                         else:
-                                            it_d[station][side][layer][sector]['Histograms'][hist]['properties'][prop] = "#000000"
+                                            coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['properties'][prop] = "#000000"
+                                        #print m.to_rgba(tt_d[layer][side][sector]['Histograms'][hist]['properties'][prop],bytes=True)
+    for hist in coll_it_d:
+        for station in coll_it_d[hist]:
+            if station not in ["dtype"]:
+                for side in coll_it_d[hist][station]:
+                    if side not in ["station_info"]:
+                        for layer in coll_it_d[hist][station][side]:
+                            if layer not in ["side_info"]:
+                                for sector in coll_it_d[hist][station][side][layer]:
+                                    if sector not in ["layer_info"]:
+                                        if hist in coll_it_d[hist][station][side][layer][sector]['Histograms']:
+                                            for prop in coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['properties']:
+                                                if coll_it_d[hist][station][side][layer][sector]['is_masked'] == False:
+                                                    norm = mpl.colors.Normalize(vmin=collection['it_d'+hist+prop]['min'], vmax=collection['it_d'+hist+prop]['max'])
+                                                    m = cm.ScalarMappable(norm=norm, cmap=cmap)
+                                                    coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['init_properties'][prop]))
+                                                else:
+                                                    coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['properties'][prop] = "#000000"
     return collection
 

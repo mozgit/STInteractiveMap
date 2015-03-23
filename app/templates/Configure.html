@@ -1,0 +1,39 @@
+<!doctype html>
+<title>Configure files</title>
+<div style="width:100%">
+<h1>Choose histograms you want to map</h1>
+<form action="" method=post enctype=multipart/form-data>
+<div style="width:50%;position:absolute;left:50%">
+<table>
+<tr>
+<td><h2>IT</h2></td><td></td>
+</tr>
+{% for h_TT in existing_plots_TT %}
+  <tr>
+    <td><label for="{{ h_TT }}">{{ h_TT }}</label></td><td> <input type="checkbox" name="{{ h_TT }}" id="{{ h_TT }}" 
+    {% if h_TT in hist_coll['tt'] %} checked {% endif %}/></td>
+  </tr>
+{% endfor %}
+</table>
+</div>
+<div style="width:50%;position:absolute;left:0%">
+
+<table>
+<tr>
+<td><h2>TT</h2></td><td></td>
+</tr>
+{% for h_IT in existing_plots_IT %}
+  <tr>
+      <td><label for="{{ h_IT }}">{{ h_IT }}</label></td><td> <input type="checkbox" name="{{ h_IT }}" id="{{ h_IT }}" 
+    {% if h_IT in hist_coll['it'] %} checked {% endif %}/></td>
+  </tr>
+{% endfor %}
+</div>
+</table>
+<input type="submit" name="btn" value="Configure">
+</form>
+
+<form action="" method=post enctype=multipart/form-data>
+<input type="submit" name="btn" value="Edit histograms list">
+</form>
+</div>
