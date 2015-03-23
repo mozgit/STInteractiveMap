@@ -16,7 +16,11 @@ pip install mongoengine
 pip install flask_mongoengine
 ```
 - Copy repository from github (https://help.github.com/articles/duplicating-a-repository/)
-- run monitor:
+- Run database:
+```
+mongod
+```
+- Run monitor in another terminal:
 ```
 python manage.py runserver
 ```
