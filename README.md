@@ -16,8 +16,19 @@ pip install pymongo==2.8 #doesn't work with 3.0
 pip install mongoengine #works at 0.8.7
 pip install flask_mongoengine
 ```
+- Install ROOT v5:
+- 
+```
+git clone http://root.cern.ch/git/root.git
+git tag -l
+git checkout -b v5-34-32 v5-34-32
+./configure --enable-soversion --all
+make -j2
+cd bin
+source thisroot.sh
+```
 - Copy repository from github (https://help.github.com/articles/duplicating-a-repository/)
-- Run database:
+- Run database (you may be asked to create /data/db direcotry):
 ```
 mongod
 ```
