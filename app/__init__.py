@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for, Response
 from flask.ext.mongoengine import MongoEngine
 from engine.detectors.CreateDetectors import *
 #from flask.ext.login import LoginManager
-
+from pymongo import read_preferences
 
 tt_d = create_TT()
 it_d = create_IT()
@@ -22,7 +22,7 @@ ALLOWED_EXTENSIONS = set(['pkl', 'root', 'zip'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_EXTENSIONS'] = ALLOWED_EXTENSIONS
-app.config["MONGODB_SETTINGS"] = {'DB': "my_tumble_log"}
+app.config["MONGODB_SETTINGS"] = {'DB': "my_tumble_log", 'read_preference':read_preferences.ReadPreference.PRIMARY}
 app.config["SECRET_KEY"] = "KeepThisS3cr3t"
 db = MongoEngine(app)
 #app.config.from_object('config')

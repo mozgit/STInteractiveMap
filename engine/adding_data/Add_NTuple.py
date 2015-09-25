@@ -1,5 +1,6 @@
 import pickle
 import os
+import json
 from ROOT import *
 from engine.module_based_naming.Alternative_Naming_Triggers import *
 from Add_Histograms import *
@@ -54,26 +55,35 @@ def GetHistosFromNT(f_n):
     f = TFile(f_n)
     dictionary = {}
     dictionary = SniffInfo(f, dictionary, names)
-    for d in dictionary:
-        output = open('engine/adding_data/pickle/'+d+'.pkl', 'wb')
-        pickle.dump(dictionary[d], output)
-        output.close()
-    return dictionary.keys()
+    #for d in dictionary:
+    #    output = open('engine/adding_data/pickle/'+d+'.pkl', 'wb')
+    #    pickle.dump(dictionary[d], output)
+    #    output.close()
+    return dictionary
 
 def Add_NTuple(ntuple, it_d, tt_d,hist_coll):
-    if not os.path.exists("engine/adding_data/pickle"):
-        os.system("mkdir engine/adding_data/pickle")
-    for h in GetHistosFromNT(ntuple):
-        if h[0] == 'T':
-            f = open('engine/adding_data/pickle/'+h+".pkl")
-            TT_hists = pickle.load(f)
+    #if not os.path.exists("engine/adding_data/pickle"):
+    #    os.system("mkdir engine/adding_data/pickle")
+    nf = open('engine/NameList.pkl')
+    names = pickle.load(nf)
+    print 'Opening file %s ...'%ntuple
+    f = TFile(ntuple)
+    dictionary = {}
+    dictionary = SniffInfo(f, dictionary, names)
+    #print json.dumps(dictionary,sort_keys=True, indent=4)
+    for h_name in dictionary:
+        if h_name[0] == 'T':
+            #f = open('engine/adding_data/pickle/'+h+".pkl")
+            #TT_hists = pickle.load(f)
             #if h not in hist_coll['tt']:
             #    hist_coll['tt'].append(h)
-            Add_Histograms(tt_d, TT_hists, h, hist_coll)
-        if h[0] == 'I':
-            f = open('engine/adding_data/pickle/'+h+".pkl")
-            IT_hists = pickle.load(f)
+            Add_Histograms(tt_d, dictionary[h_name], h_name, hist_coll)
+            #os.system("rm engine/adding_data/pickle/"+h+".pkl")
+        if h_name[0] == 'I':
+            #f = open('engine/adding_data/pickle/'+h+".pkl")
+            #IT_hists = pickle.load(f)
             #if h not in hist_coll['it']:
             #    hist_coll['it'].append(h)
-            Add_Histograms(it_d, IT_hists, h, hist_coll)
+            Add_Histograms(it_d, dictionary[h_name], h_name, hist_coll)
+            #os.system("rm engine/adding_data/pickle/"+h+".pkl")
     return

@@ -116,8 +116,12 @@ def smart_interval(min_l, max_l, ndigit):
     counter = 0
     i = 0
     while counter<ndigit:
-        if d_max[i]!=d_min[i]:
-            counter+=1
+        print str(i) + "<"+str(ndigit)+" "+d_max+" "+d_min
+        try:
+            if d_max[i]!=d_min[i]:
+                counter+=1
+        except:
+            break
         i+=1
     #print "("+str(min_l)+", "+str(max_l)+") ="+str(i)+"=> ("+str(round_down(min_l,i-d_pow))+", "+str(round_up(max_l,i))+")"
     return [round_down(min_l,i-d_pow),round_up(max_l,i)]

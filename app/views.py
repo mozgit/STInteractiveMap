@@ -92,8 +92,11 @@ def edit():
             return redirect(url_for('.edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT, hist_coll = histos))
         if request.form['btn'] == 'Remove':
             for mp in MappedPlot.objects.all():
+                if mp.__unicode__() in request.form:
+                    mp.remove_plots()
                 mp.remove_from_detector()
                 if mp.__unicode__() in request.form:
+                    #Here plots should be reomved
                     MappedPlot.objects.get(name=mp.__unicode__()).delete()
             existing_plots_IT = []
             existing_plots_TT = []

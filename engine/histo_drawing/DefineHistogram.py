@@ -7,13 +7,14 @@ if not os.path.exists("app/static/plots"):
 def GetAPlot(hist,histname):
     """ Looks for a png files. If it is not there,
     it produces it by saving a ROOT histogram  as .png """
-    if not os.path.isfile("app/static/plots/"+histname+".png"):
-        gStyle.SetOptStat("emr")
-        gStyle.SetPadTopMargin(0.06) 
-        c = TCanvas("c","c", 900, 900)
-        #hist.GetYaxis().SetRangeUser(hist.GetBinContent(hist.GetMinimumBin())-0.2*diff, hist.GetBinContent(hist.GetMaximumBin())+0.2*diff);
-        hist.Draw()
-        c.SaveAs("app/static/plots/"+histname+".png")
+    #if not os.path.isfile("app/static/plots/"+histname+".png"):
+    gStyle.SetOptStat("emr")
+    gStyle.SetPadTopMargin(0.06) 
+    c = TCanvas("c","c", 900, 900)
+    #hist.GetYaxis().SetRangeUser(hist.GetBinContent(hist.GetMinimumBin())-0.2*diff, hist.GetBinContent(hist.GetMaximumBin())+0.2*diff);
+    hist.Draw()
+    #print histname + " nEntries: " + str(hist.GetEntries())
+    c.SaveAs("app/static/plots/"+histname+".png")
     dic = {"plot":"plots/"+histname+".png", "init_properties":{}, "properties":{'mean':hist_mean(hist)
                                                             , 'sigma':hist_sigma(hist)
                                                             , 'Y_mean':Y_mean(hist)
