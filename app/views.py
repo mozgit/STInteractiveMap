@@ -75,12 +75,13 @@ def edit():
     if request.method == 'POST':
         if request.form['btn'] == 'Upload':
             files = request.files.getlist("file[]")
+            prefix = "".join(c for c in request.form['text'] if c.isalnum())
             for file in files:
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
                     file_address = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                     file.save(file_address)
-                    add_file(filename)
+                    add_file(filename, prefix)
                     os.system("rm "+file_address)
             existing_plots_IT = []
             existing_plots_TT = []

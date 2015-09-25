@@ -57,7 +57,7 @@ def save_to_db(or_det, histos):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-def add_file(filename):
+def add_file(filename, prefix=""):
     global collection
     minihistos = {'it':{}, 'tt':{}}
     if filename.rsplit('.', 1)[1] == 'pkl':
@@ -74,7 +74,7 @@ def add_file(filename):
             collection = Normalize_Colours(tt_d, it_d)
 
     if filename.rsplit('.', 1)[1] == 'root':
-        Add_NTuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), it_d, tt_d,minihistos)
+        Add_NTuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), it_d, tt_d,minihistos, prefix)
         collection = Normalize_Colours(tt_d, it_d)
     if filename.rsplit('.', 1)[1] == 'zip':
         file_address = os.path.join(app.config['UPLOAD_FOLDER'], filename)

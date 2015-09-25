@@ -7,7 +7,7 @@ from Add_Histograms import *
 """
 These functions are used to add histograms from NTuple
 """
-def SniffInfo(f, dictionary, names):
+def SniffInfo(f, dictionary, names, prefix = ""):
     """ Populates a dictionary of the content of the ROOT file
     (in this case, TH1D histograms) """
     for k in f.GetListOfKeys():
@@ -29,7 +29,7 @@ def SniffInfo(f, dictionary, names):
                 for sector_name in names['ITNames']:
                     if sector_name == name[len(name) - len(sector_name):]:
                         #naming_schema = 'IT_'+re.sub(sector_name,'',name)
-                        naming_schema = 'IT_'+orig_histo_name.split('_')[0]
+                        naming_schema = 'IT_'+prefix+"_"+orig_histo_name.split('_')[0]
                         if naming_schema not in dictionary.keys():
                             dictionary[naming_schema] = {}
                         dictionary[naming_schema][sector_name] = f.Get(orig_histo_name)
@@ -37,31 +37,31 @@ def SniffInfo(f, dictionary, names):
                 for sector_name in names['TTNames']:
                     if sector_name == name[len(name) - len(sector_name):]:
                         #naming_schema = 'TT_'+re.sub(sector_name,'',name)
-                        naming_schema = 'TT_'+orig_histo_name.split('_')[0]
+                        naming_schema = 'TT_'+prefix+"_"+orig_histo_name.split('_')[0]
                         if naming_schema not in dictionary.keys():
                             dictionary[naming_schema] = {}
                         dictionary[naming_schema][sector_name] = f.Get(orig_histo_name)
                         #print dictionary[naming_schema][name]
         if t == 'TDirectoryFile':
-            SniffInfo(f.Get(element_name), dictionary, names)
+            SniffInfo(f.Get(element_name), dictionary, names, prefix)
     return dictionary
 
-def GetHistosFromNT(f_n):
-    """ Dumps the histograms of a ROOT file into pikle files
-    according to the histogram name """
-    nf = open('engine/NameList.pkl')
-    names = pickle.load(nf)
-    print 'Opening file %s ...'%f_n
-    f = TFile(f_n)
-    dictionary = {}
-    dictionary = SniffInfo(f, dictionary, names)
-    #for d in dictionary:
-    #    output = open('engine/adding_data/pickle/'+d+'.pkl', 'wb')
-    #    pickle.dump(dictionary[d], output)
-    #    output.close()
-    return dictionary
+#def GetHistosFromNT(f_n):
+#    """ Dumps the histograms of a ROOT file into pikle files
+#    according to the histogram name """
+#    nf = open('engine/NameList.pkl')
+#    names = pickle.load(nf)
+#    print 'Opening file %s ...'%f_n
+#    f = TFile(f_n)
+#    dictionary = {}
+#    dictionary = SniffInfo(f, dictionary, names)
+#    #for d in dictionary:
+#    #    output = open('engine/adding_data/pickle/'+d+'.pkl', 'wb')
+#    #    pickle.dump(dictionary[d], output)
+#    #    output.close()
+#    return dictionary
 
-def Add_NTuple(ntuple, it_d, tt_d,hist_coll):
+def Add_NTuple(ntuple, it_d, tt_d,hist_coll, prefix=""):
     #if not os.path.exists("engine/adding_data/pickle"):
     #    os.system("mkdir engine/adding_data/pickle")
     nf = open('engine/NameList.pkl')
@@ -69,7 +69,7 @@ def Add_NTuple(ntuple, it_d, tt_d,hist_coll):
     print 'Opening file %s ...'%ntuple
     f = TFile(ntuple)
     dictionary = {}
-    dictionary = SniffInfo(f, dictionary, names)
+    dictionary = SniffInfo(f, dictionary, names, prefix)
     #print json.dumps(dictionary,sort_keys=True, indent=4)
     for h_name in dictionary:
         if h_name[0] == 'T':

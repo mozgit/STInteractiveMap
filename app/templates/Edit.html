@@ -35,7 +35,11 @@
 
 <h1>Upload new File</h1>
 <form action="" method=post enctype=multipart/form-data>
-    <p><input type=file name="file[]" multiple="">
+    <p>
+    Type prefix (if you like):<br>
+    <input type="text" name="text" size="30" value="">
+    </p>
+    <p><input type=file name="file[]" multiple=""></p>
     <input type="submit" name="btn" value="Upload">
 </form>
 <div style="width:100%;height:2%;position:absolute;top:0%;left:0%;text-align:center;">
