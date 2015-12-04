@@ -155,7 +155,11 @@ def Normalize_Colours(coll_tt_d,coll_it_d):
                                     if hist in coll_tt_d[hist][layer][side][sector]['Histograms']:
                                         for prop in coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['properties']:
                                             if 'tt_d'+hist+prop not in collection:
-                                                collection['tt_d'+hist+prop]={'owner':coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['owner'], 'vals':[], 'min':'', 'max':'', 'histo_name':hist, 'det_type':'tt', 'bins':{}}
+                                                try:
+                                                    owner = coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['owner']
+                                                except:
+                                                    owner = "Old files"
+                                                collection['tt_d'+hist+prop]={'owner':owner, 'vals':[], 'min':'', 'max':'', 'histo_name':hist, 'det_type':'tt', 'bins':{}}
                                             collection['tt_d'+hist+prop]['vals'].append(coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['init_properties'][prop])
     for hist in coll_it_d:
         for station in coll_it_d[hist]:
@@ -170,7 +174,11 @@ def Normalize_Colours(coll_tt_d,coll_it_d):
                                             if hist in coll_it_d[hist][station][side][layer][sector]['Histograms']:
                                                 for prop in coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['properties']:
                                                     if 'it_d'+hist+prop not in collection:
-                                                        collection['it_d'+hist+prop]={'owner':coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['owner'], 'vals':[], 'min':'', 'max':'', 'histo_name':hist, 'det_type':'it', 'bins':{}}
+                                                        try:
+                                                            owner = coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['owner']
+                                                        except:
+                                                            owner = "Old files"
+                                                        collection['it_d'+hist+prop]={'owner':owner, 'vals':[], 'min':'', 'max':'', 'histo_name':hist, 'det_type':'it', 'bins':{}}
                                                     collection['it_d'+hist+prop]['vals'].append(coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['init_properties'][prop])
     #print json.dumps(collection,sort_keys=True, indent=4)
     for coll in collection:

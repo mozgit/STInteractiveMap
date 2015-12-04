@@ -234,8 +234,8 @@ def hello():
             except:
                 pass
         return render_template('index.html', coll_tt = coll_tt_d, coll_it=coll_it_d, dm = Drawing_mode, collections = collection, hist_coll = histos, tt = g_tt_d, it = g_it_d)
-    collection = Retrieve_Collection(histos)
-    #collection = Normalize_Colours(coll_tt_d, coll_it_d)
+    #collection = Retrieve_Collection(histos)
+    collection = Normalize_Colours(coll_tt_d, coll_it_d)
     Drawing_mode = {'TT_hist':'', 'IT_hist':'','TT_prop':'', 'IT_prop':''}
     #print json.dumps(collection,sort_keys=True, indent=4)
     #print json.dumps(histos,sort_keys=True, indent=4)
