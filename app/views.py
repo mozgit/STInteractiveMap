@@ -67,19 +67,19 @@ def configure():
     global coll_it_d
     global collection
     if request.method == 'POST':
-        if request.form['btn'] == 'Edit histograms list':
-            existing_plots_IT = {}
-            existing_plots_TT = {}
-            for mp in MappedPlot.objects.all():
-                if mp.dtype == 'TT':
-                    if mp.owner not in existing_plots_TT:
-                        existing_plots_TT[mp.owner]=[]
-                    existing_plots_TT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-                if mp.dtype == 'IT':
-                    if mp.owner not in existing_plots_IT:
-                        existing_plots_IT[mp.owner]=[]
-                    existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-            return redirect(url_for('.edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT, hist_coll = histos))
+        #if request.form['btn'] == 'Edit histograms list':
+            #existing_plots_IT = {}
+            #existing_plots_TT = {}
+            #for mp in MappedPlot.objects.all():
+                #if mp.dtype == 'TT':
+                    #if mp.owner not in existing_plots_TT:
+                        #existing_plots_TT[mp.owner]=[]
+                    #existing_plots_TT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
+                #if mp.dtype == 'IT':
+                    #if mp.owner not in existing_plots_IT:
+                        #existing_plots_IT[mp.owner]=[]
+                    #existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
+            #return redirect(url_for('.edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT, hist_coll = histos))
         if request.form['btn'] == 'Configure':
             for mp in MappedPlot.objects.all():
                 mp.remove_from_detector()
