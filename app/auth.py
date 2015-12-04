@@ -7,7 +7,7 @@ import flask.ext.login as flask_login
 from flask import render_template
 
 def get_users():
-    return {'admin': {'password': '1234'}, 'Ilya': {'password': '1234'}}
+    return {'admin': {'password': '1234'}, 'Ilya': {'password': '1234'}, 'Elena': {'password': '1234'}}
 
 class User(UserMixin):
     pass
