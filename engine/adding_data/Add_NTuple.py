@@ -13,11 +13,11 @@ def SniffInfo(f, dictionary, names, prefix = ""):
     for k in f.GetListOfKeys():
         t = k.GetClassName()
         element_name = k.GetName()
-        if t == 'TH1D' or t == 'TH1F' or t == 'TH1I':
+        if t == 'TH1D' or t == 'TH1F' or t == 'TH1I' or t == 'TProfile':
             #Here we deal with module-based binning.
             orig_histo_name = element_name
             try:
-                element_name = orig_histo_name.split('_')[1] # parse histogram name for ST element name
+                element_name = orig_histo_name.replace('-','_').split('_')[1] # parse histogram name for ST element name
             except:
                 pass
             extracted_sector_names = [element_name]
@@ -61,7 +61,7 @@ def SniffInfo(f, dictionary, names, prefix = ""):
 #    #    output.close()
 #    return dictionary
 
-def Add_NTuple(ntuple, it_d, tt_d,hist_coll, prefix=""):
+def Add_NTuple(ntuple, it_d, tt_d,hist_coll, prefix="", username="anonimuos"):
     #if not os.path.exists("engine/adding_data/pickle"):
     #    os.system("mkdir engine/adding_data/pickle")
     nf = open('engine/NameList.pkl')
@@ -77,13 +77,13 @@ def Add_NTuple(ntuple, it_d, tt_d,hist_coll, prefix=""):
             #TT_hists = pickle.load(f)
             #if h not in hist_coll['tt']:
             #    hist_coll['tt'].append(h)
-            Add_Histograms(tt_d, dictionary[h_name], h_name, hist_coll)
+            Add_Histograms(tt_d, dictionary[h_name], h_name, hist_coll, username)
             #os.system("rm engine/adding_data/pickle/"+h+".pkl")
         if h_name[0] == 'I':
             #f = open('engine/adding_data/pickle/'+h+".pkl")
             #IT_hists = pickle.load(f)
             #if h not in hist_coll['it']:
             #    hist_coll['it'].append(h)
-            Add_Histograms(it_d, dictionary[h_name], h_name, hist_coll)
+            Add_Histograms(it_d, dictionary[h_name], h_name, hist_coll, username)
             #os.system("rm engine/adding_data/pickle/"+h+".pkl")
     return

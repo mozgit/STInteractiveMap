@@ -4,7 +4,7 @@ import os
 if not os.path.exists("app/static/plots"):
     os.system("mkdir app/static/plots")
 
-def GetAPlot(hist,histname):
+def GetAPlot(hist,histname, username="anonimous"):
     """ Looks for a png files. If it is not there,
     it produces it by saving a ROOT histogram  as .png """
     #if not os.path.isfile("app/static/plots/"+histname+".png"):
@@ -15,7 +15,7 @@ def GetAPlot(hist,histname):
     hist.Draw()
     #print histname + " nEntries: " + str(hist.GetEntries())
     c.SaveAs("app/static/plots/"+histname+".png")
-    dic = {"plot":"plots/"+histname+".png", "init_properties":{}, "properties":{'mean':hist_mean(hist)
+    dic = {"plot":"plots/"+histname+".png", "owner":username,  "init_properties":{}, "properties":{'mean':hist_mean(hist)
                                                             , 'sigma':hist_sigma(hist)
                                                             , 'Y_mean':Y_mean(hist)
                                                             , 'slope':slope(hist)
@@ -36,6 +36,7 @@ def hist_sigma(hist):
     return hist.GetRMS()
 
 def Y_mean(hist):
+    return 0
     hist.Fit("pol0","q") #q - to make fit silent
     f = hist.GetFunction("pol0")
     try:
@@ -44,6 +45,7 @@ def Y_mean(hist):
         return 0
 
 def slope(hist):
+    return 0
     hist.Fit("pol1","q") #q - to make fit silent
     f = hist.GetFunction("pol1")
     try:
@@ -52,6 +54,7 @@ def slope(hist):
         return 0
 
 def chi2_lin(hist):
+    return 0
     hist.Fit("pol1","q") #q - to make fit silent
     f = hist.GetFunction("pol1")
     try:
@@ -60,6 +63,7 @@ def chi2_lin(hist):
         return 0
 
 def max_variation(hist):
+    return 0
     mean = Y_mean(hist)
     var = 0
     for i in range(1, hist.GetXaxis().GetNbins()+1):
@@ -70,7 +74,12 @@ def max_variation(hist):
 
 
 def min_y(hist):
+    return 0
     return hist.GetBinContent(hist.GetMinimumBin())
 
 def max_y(hist):
-    return hist.GetBinContent(hist.GetMaximumBin())
+    try:
+        return hist.GetBinContent(133)
+    except:
+        return hist.GetBinContent(hist.GetMaximumBin()) 
+    

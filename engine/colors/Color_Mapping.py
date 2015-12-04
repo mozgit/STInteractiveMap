@@ -2,6 +2,7 @@ import matplotlib as mpl
 import matplotlib.cm as cm
 import json
 from app import dead_sector
+from app.models import *
 from engine.detectors.Mask_sector import *
 """
 These functions provide color mapping of a IT/TT according to functions from histograms.
@@ -45,7 +46,7 @@ def round_up(number, ndigit):
     if number<0:
         return -round_down(-number,ndigit)
     if ndigit < 1:
-        print "Warning in smart schema rounding! (Round Up) ndigit = "+str(ndigit)+", returning original number"
+        #print "Warning in smart schema rounding! (Round Up) ndigit = "+str(ndigit)+", returning original number"
         return number
     simplified = split_number(number)['digits']
     power = split_number(number)['power']
@@ -67,7 +68,7 @@ def round_down(number, ndigit):
     if number<0:
         return -round_down(-number,ndigit)
     if ndigit < 1:
-        print "Warning in smart schema rounding! (Round Down) ndigit = "+str(ndigit)+", returning 0"
+        #print "Warning in smart schema rounding! (Round Down) ndigit = "+str(ndigit)+", returning 0"
         return 0
     simplified = split_number(number)['digits']
     power = split_number(number)['power']
@@ -116,7 +117,7 @@ def smart_interval(min_l, max_l, ndigit):
     counter = 0
     i = 0
     while counter<ndigit:
-        print str(i) + "<"+str(ndigit)+" "+d_max+" "+d_min
+        #print str(i) + "<"+str(ndigit)+" "+d_max+" "+d_min
         try:
             if d_max[i]!=d_min[i]:
                 counter+=1
@@ -130,12 +131,14 @@ def smart_interval(min_l, max_l, ndigit):
 def Normalize_Colours(coll_tt_d,coll_it_d):
     #Create collection of properties:
     #collection = {'tt+hist+property':{
+    #                                'owner':
     #                                'vals':[]
     #                                'min':
     #                                'max':
-    #                                'bin_number':{colour_code, value}
+    #                                'bins':{'bin_number':{colour_code, value}}
     #                               }}
     #print json.dumps(tt_d,sort_keys=True, indent=4)
+    #To be moved to additional DB
     collection = {}
     cmap = cm.PiYG
     for d_s in dead_sector:
@@ -152,7 +155,7 @@ def Normalize_Colours(coll_tt_d,coll_it_d):
                                     if hist in coll_tt_d[hist][layer][side][sector]['Histograms']:
                                         for prop in coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['properties']:
                                             if 'tt_d'+hist+prop not in collection:
-                                                collection['tt_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
+                                                collection['tt_d'+hist+prop]={'owner':coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['owner'], 'vals':[], 'min':'', 'max':'', 'histo_name':hist, 'det_type':'tt', 'bins':{}}
                                             collection['tt_d'+hist+prop]['vals'].append(coll_tt_d[hist][layer][side][sector]['Histograms'][hist]['init_properties'][prop])
     for hist in coll_it_d:
         for station in coll_it_d[hist]:
@@ -167,7 +170,7 @@ def Normalize_Colours(coll_tt_d,coll_it_d):
                                             if hist in coll_it_d[hist][station][side][layer][sector]['Histograms']:
                                                 for prop in coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['properties']:
                                                     if 'it_d'+hist+prop not in collection:
-                                                        collection['it_d'+hist+prop]={'vals':[], 'min':'', 'max':''}
+                                                        collection['it_d'+hist+prop]={'owner':coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['owner'], 'vals':[], 'min':'', 'max':'', 'histo_name':hist, 'det_type':'it', 'bins':{}}
                                                     collection['it_d'+hist+prop]['vals'].append(coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['init_properties'][prop])
     #print json.dumps(collection,sort_keys=True, indent=4)
     for coll in collection:
@@ -176,10 +179,10 @@ def Normalize_Colours(coll_tt_d,coll_it_d):
         norm = mpl.colors.Normalize(vmin=collection[coll]['min'], vmax=collection[coll]['max'])
         m = cm.ScalarMappable(norm=norm, cmap=cmap)
         for i in range(0,100):
-            collection[coll][str(i)] = {}
-            collection[coll][str(i)]['colour'] = convert_to_hex(m.to_rgba(collection[coll]['min'] + float(i)/100.*(collection[coll]['max']-collection[coll]['min'])))
-            collection[coll][str(i)]['value'] = str(collection[coll]['min'] + float(i)/100.*(collection[coll]['max']-collection[coll]['min']))
-        collection[coll]['99']['value'] = str(collection[coll]['max']) 
+            collection[coll]['bins'][str(i)] = {}
+            collection[coll]['bins'][str(i)]['colour'] = convert_to_hex(m.to_rgba(collection[coll]['min'] + float(i)/100.*(collection[coll]['max']-collection[coll]['min'])))
+            collection[coll]['bins'][str(i)]['value'] = str(collection[coll]['min'] + float(i)/100.*(collection[coll]['max']-collection[coll]['min']))
+        collection[coll]['bins']['99']['value'] = str(collection[coll]['max']) 
     for hist in coll_tt_d:
         for layer in coll_tt_d[hist]:
             if layer not in ["dtype"]:
@@ -213,5 +216,62 @@ def Normalize_Colours(coll_tt_d,coll_it_d):
                                                     coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['properties'][prop] = convert_to_hex(m.to_rgba(coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['init_properties'][prop]))
                                                 else:
                                                     coll_it_d[hist][station][side][layer][sector]['Histograms'][hist]['properties'][prop] = "#000000"
+
+    #Here we add collection to DB!
+    for coll in collection:
+        try:
+            ColorMap.objects.get(name=coll).delete()
+        except:
+            pass
+
+        c = ColorMap(
+            owner = collection[coll]['owner'],
+            name = coll,
+            histo_name = collection[coll]['histo_name'],
+            det_type = collection[coll]['det_type'],
+            values = collection[coll]['vals'],
+            minv = collection[coll]['min'],
+            maxv = collection[coll]['max'],
+            bins = collection[coll]['bins']
+            )
+        try:
+            c.save()
+            print coll+"  saved to Color Map DB with owner "+collection[coll]['owner']
+        except:
+            print "Unable to save entry to DB"
+
     return collection
+
+def Retrieve_Collection(histos):
+    collection = {}
+    for det in histos:
+        for hist in histos[det]:
+            for prop in histos[det][hist]:
+                name = det.lower()+"_d"+hist+prop
+                summary = ColorMap.objects.get(name=name)
+                collection[name]=summary.return_collection()
+    return collection
+
+    #histos ={
+    #"it": {
+    #    "IT_::Ilya_Residual": [
+    #        "slope", 
+    #        "Y_mean", 
+    #        "max_variation", 
+    #        "min_y", 
+    #        "max_y", 
+    #        "sigma", 
+    #        "smoothness", 
+    #        "mean"
+    #    ],
+    #   ...
+    #}, 
+    #"tt":{ 
+    #...
+
+
+
+
+
+
 

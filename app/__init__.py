@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, redirect, url_for, Response
 from flask.ext.mongoengine import MongoEngine
 from engine.detectors.CreateDetectors import *
-#from flask.ext.login import LoginManager
+from flask.ext.login import LoginManager
 from pymongo import read_preferences
 
 tt_d = create_TT()
@@ -27,7 +27,7 @@ app.config["SECRET_KEY"] = "KeepThisS3cr3t"
 db = MongoEngine(app)
 #app.config.from_object('config')
 #db = SQLAlchemy(app)
-#login_manager = LoginManager()
-#login_manager.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 from app import views, models

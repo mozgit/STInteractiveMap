@@ -5,12 +5,59 @@ import sys
 import os
 from copy import deepcopy
 
-class MappedPlot(db.Document):
-    name = db.StringField(max_length=255, required=True, unique=True)
-    dtype = db.StringField(max_length=2, required=True)
-    body = db.DictField(required=True)
-    h_props = db.ListField(required=True)
 
+    #collection = {'tt+hist+property':{
+    #                                'owner':
+    #                                'vals':[]
+    #                                'min':
+    #                                'max':
+    #                                'bin_number':{colour_code, value}
+    #                               }}
+class ColorMap(db.Document):
+    name = db.StringField(max_length=255, required=True, unique=True)
+    histo_name = db.StringField(max_length=255, required=True)
+    owner = db.StringField(max_length=255, required=True)
+    det_type = db.StringField(max_length=255, required=True)
+    values = db.ListField(required=True)
+    minv = db.FloatField(required=True)
+    maxv = db.FloatField(required=True)
+    bins = db.DictField(required=True)
+
+    def return_collection(self):
+        collection = {'owner':self.owner,
+                      'vals':self.values,
+                      'min':self.minv,
+                      'max':self.maxv,
+                      'bins':self.bins,
+                      'histo_name':self.histo_name,
+                      'det_type':self.det_type
+        }
+        return collection
+
+
+class MappedPlot(db.Document):
+    #Name of a histogram
+    name = db.StringField(max_length=255, required=True, unique=True)
+    #Owner
+    owner = db.StringField(max_length=255)
+    #TT or IT
+    dtype = db.StringField(max_length=2, required=True)
+    #The huge dictionary containing all sectors, plots and numbers
+    body = db.DictField(required=True)
+    #Calculated properties (mean, sigma etc)
+    h_props = db.ListField(required=True)
+    #Comment to keep run conditions etx
+    comment = db.StringField(max_length=2000)
+
+    def remove_color_map(self):
+        for p in self.h_props:
+            name = self.dtype.lower()+"_d"+self.name+p
+            try:
+                ColorMap.objects.get(name=name).delete()
+                print name + " map deleted"
+            except:
+                print "Failed to delete "+name
+        return True
     def __unicode__(self):
         return self.name
 
@@ -65,6 +112,7 @@ class MappedPlot(db.Document):
         global coll_it_d
         global coll_tt_d
         global hist_coll
+        print "Trying to remove plots for "+self.name
         if self.dtype == "TT":
             if self.name in coll_tt_d:
                 for layer in coll_tt_d[self.name]:
@@ -76,7 +124,7 @@ class MappedPlot(db.Document):
                                         try:
                                             plot_address = coll_tt_d[self.name][layer][side][sector]['Histograms'][self.name]['plot']
                                             os.system("rm app/static/" + plot_address)
-                                            print plot_address+" removed"
+                                            print "app/static/"+plot_address+" removed"
                                         except:
                                             pass
             return
@@ -93,7 +141,7 @@ class MappedPlot(db.Document):
                                                 try:
                                                     plot_address = coll_it_d[self.name][station][side][layer][sector]['Histograms'][self.name]['plot']
                                                     os.system("rm app/static/" + plot_address)
-                                                    print plot_address+" removed"
+                                                    print "app/static/"+plot_address+" removed"
                                                 except:
                                                     pass
             return

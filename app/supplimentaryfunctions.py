@@ -11,7 +11,7 @@ from app import coll_it_d as it_d
 from app import coll_tt_d as tt_d
 from engine.colors.Color_Mapping import *
 
-def save_to_db(or_det, histos):
+def save_to_db(or_det, histos, username="anonimous", comment=""):
     for h in or_det:
         try:
             MappedPlot.objects.get(name=h).delete()
@@ -44,12 +44,14 @@ def save_to_db(or_det, histos):
                                                 data[station][side][layer][sector]['Histograms'][h]=copy.deepcopy(or_det[h][station][side][layer][sector]['Histograms'][h])
         mp = MappedPlot(
             name = h,
+            owner = username,
             dtype = or_det[h]['dtype'],
             body = data,
-            h_props = histos[or_det[h]['dtype'].lower()][h])
+            h_props = histos[or_det[h]['dtype'].lower()][h],
+            comment = comment)
         try:
             mp.save()
-            print h+"  saved to DB"
+            print h+"  saved to DB with owner "+username
         except:
             print "Unable to save entry to DB"
     return
@@ -57,24 +59,26 @@ def save_to_db(or_det, histos):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-def add_file(filename, prefix=""):
+def add_file(filename, prefix="", username="anonimous", comment=""):
     global collection
+    global it_d
+    global tt_d
     minihistos = {'it':{}, 'tt':{}}
     if filename.rsplit('.', 1)[1] == 'pkl':
         if "TT" in filename:
             pickle_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             hist_name = filename.rsplit('.', 1)[0]
-            Add_Pkl(tt_d, pickle_file, hist_name,minihistos)
+            Add_Pkl(tt_d, pickle_file, hist_name,minihistos, username)
             collection = Normalize_Colours(tt_d, it_d)
 
         if "IT" in filename:
             pickle_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             hist_name = filename.rsplit('.', 1)[0]
-            Add_Pkl(it_d, pickle_file, hist_name,minihistos)
+            Add_Pkl(it_d, pickle_file, hist_name,minihistos, username)
             collection = Normalize_Colours(tt_d, it_d)
 
     if filename.rsplit('.', 1)[1] == 'root':
-        Add_NTuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), it_d, tt_d,minihistos, prefix)
+        Add_NTuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), it_d, tt_d,minihistos, prefix, username)
         collection = Normalize_Colours(tt_d, it_d)
     if filename.rsplit('.', 1)[1] == 'zip':
         file_address = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -85,13 +89,15 @@ def add_file(filename, prefix=""):
             os.system("mkdir "+outpath)
         for name in z.namelist():
             z.extract(name, outpath)
-        Add_Folder(outpath, it_d, tt_d,minihistos)
+        Add_Folder(outpath, it_d, tt_d,minihistos, username)
         collection = Normalize_Colours(tt_d, it_d)
     for dt in minihistos:
         for h in minihistos[dt]:
             histos[dt][h]=minihistos[dt][h]
     print tt_d
     print it_d
-    save_to_db(tt_d, histos)
-    save_to_db(it_d, histos)
+    save_to_db(tt_d, histos, username, comment)
+    save_to_db(it_d, histos, username, comment)
+    tt_d = {}
+    it_d = {}    
     return 

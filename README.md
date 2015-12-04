@@ -15,6 +15,7 @@ pip install WTForms
 pip install pymongo==2.8 #doesn't work with 3.0
 pip install mongoengine #works at 0.8.7
 pip install flask_mongoengine
+pip install Flask-Login
 ```
 - Install ROOT v5:
 - 

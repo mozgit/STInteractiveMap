@@ -67,15 +67,15 @@ congifure
             {% if dm['TT_prop'] %}
                 {% for i in range(0, 100) %}
                     <span class="dropt" >
-                        <div style="width:1%;height:50%;position:absolute;top:0%;left:{{ i }}%;background-color:{{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join][i|string]['colour'] }};">
-                            <span> {{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join][i|string]['value'] }}</span>
+                        <div style="width:1%;height:50%;position:absolute;top:0%;left:{{ i }}%;background-color:{{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join]['bins'][i|string]['colour'] }};">
+                            <span> {{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join]['bins'][i|string]['value'] }}</span>
                         </div>
                     </span>
                     {% if i == 0 %}
-                            <span style="height:50%;position:absolute;top:15%;left:0%;z-index: 1;">{{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join][i|string]['value'] }}</span>
+                            <span style="height:50%;position:absolute;top:15%;left:0%;z-index: 1;">{{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join]['bins'][i|string]['value'] }}</span>
                     {% endif %}
                     {% if i == 99 %}
-                            <span style="height:50%;position:absolute;top:15%;right:0%;z-index: 1;">{{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join][i|string]['value'] }}</span>
+                            <span style="height:50%;position:absolute;top:15%;right:0%;z-index: 1;">{{ collections[['tt_d',dm['TT_hist'],dm['TT_prop']]|join]['bins'][i|string]['value'] }}</span>
                     {% endif %}
                 {% endfor %}"
             {% endif %}
@@ -162,7 +162,7 @@ congifure
         </form>
     </div>
     <div style="width:30%;height:10%;position:absolute;top:0%;left:35%;">
-        <h1><a href="/IT"> Detailed IT </a></h1>
+        <h2><a href="/IT"> Detailed IT </a></h2>
     </div>
 
     <div style="width:35%;height:10%;position:absolute;top:0%;left:65%;">
@@ -188,15 +188,15 @@ congifure
             {% if dm['IT_prop'] %}
                 {% for i in range(0, 100) %}
                     <span class="dropt" >
-                        <div style="width:1%;height:50%;position:absolute;top:0%;left:{{ i }}%;background-color:{{ collections[['it_d',dm['IT_hist'],dm['IT_prop']]|join][i|string]['colour'] }};">
-                            <span> {{ collections[['it_d',dm['IT_hist'],dm['IT_prop']]|join][i|string]['value'] }}</span>
+                        <div style="width:1%;height:50%;position:absolute;top:0%;left:{{ i }}%;background-color:{{ collections[['it_d',dm['IT_hist'],dm['IT_prop']]|join]['bins'][i|string]['colour'] }};">
+                            <span> {{ collections[['it_d',dm['IT_hist'],dm['IT_prop']]|join]['bins'][i|string]['value'] }}</span>
                         </div>
                     </span>
                     {% if i == 0 %}
-                            <span style="height:50%;position:absolute;top:15%;left:0%;z-index: 1;">{{ collections[['it_d',dm['IT_hist'],dm['IT_prop']]|join][i|string]['value'] }}</span>
+                            <span style="height:50%;position:absolute;top:15%;left:0%;z-index: 1;">{{ collections[['it_d',dm['IT_hist'],dm['IT_prop']]|join]['bins'][i|string]['value'] }}</span>
                     {% endif %}
                     {% if i == 99 %}
-                            <span style="height:50%;position:absolute;top:15%;right:0%;z-index: 1;">{{ collections[['it_d',dm['IT_hist'],dm['IT_prop']]|join][i|string]['value'] }}</span>
+                            <span style="height:50%;position:absolute;top:15%;right:0%;z-index: 1;">{{ collections[['it_d',dm['IT_hist'],dm['IT_prop']]|join]['bins'][i|string]['value'] }}</span>
                     {% endif %}
                 {% endfor %}"
             {% endif %}

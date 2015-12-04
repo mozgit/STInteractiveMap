@@ -62,4 +62,41 @@ visibility: visible;
 top: 0;  
 left: 60px; /*position where enlarged image should offset horizontally */  
 }  
+
+
+
+#button {
+    background:#FFF;
+    position:relative;
+    width:100px;
+    height:30px;
+    line-height:27px;
+    display:block;
+    border:1px solid #dadada;
+    margin:15px 0 0 10px;
+    text-align:center;
+}
+#two {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #DADADA;
+    color: #333333;
+    width:98px;
+    height: 0;
+    overflow:hidden;
+    left: 0;
+    line-height: 20px;
+    position: absolute;
+    top: 30px;
+    /*-webkit-transition: all .3s ease; 
+    -moz-transition: all .3s ease; 
+    -ms-transition: all .3s ease; 
+    -o-transition: all .3s ease; 
+    transition: all .3s ease;
+    */
+}
+#button:hover > #two {
+    display:block;
+    left:0px;
+    height:100px;
+}
 </style>

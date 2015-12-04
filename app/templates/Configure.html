@@ -1,39 +1,50 @@
 <!doctype html>
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+
 <title>Configure files</title>
 <div style="width:100%">
-<h1>Choose histograms you want to map</h1>
 <form action="" method=post enctype=multipart/form-data>
+<h1>Choose histograms you want to map</h1>
+
 <div style="width:50%;position:absolute;left:50%">
-<table>
-<tr>
-<td><h2>TT</h2></td><td></td>
-</tr>
-{% for h_TT in existing_plots_TT %}
-  <tr>
-    <td><label for="{{ h_TT }}">{{ h_TT }}</label></td><td> <input type="checkbox" name="{{ h_TT }}" id="{{ h_TT }}" 
-    {% if h_TT in hist_coll['tt'] %} checked {% endif %}/></td>
-  </tr>
-{% endfor %}
-</table>
-</div>
-<div style="width:50%;position:absolute;left:0%">
 
 <table>
 <tr>
 <td><h2>IT</h2></td><td></td>
 </tr>
-{% for h_IT in existing_plots_IT %}
-  <tr>
-      <td><label for="{{ h_IT }}">{{ h_IT }}</label></td><td> <input type="checkbox" name="{{ h_IT }}" id="{{ h_IT }}" 
-    {% if h_IT in hist_coll['it'] %} checked {% endif %}/></td>
-  </tr>
+{% for h_owner in existing_plots_IT %}
+  <td><h2>{{ h_owner }}</h2></td><td>
+  {% for h_IT in existing_plots_IT[h_owner] %}
+    <tr>
+        <td><label for="{{ h_IT['name'] }}"><span class="tooltip left" tabindex="0">{{ h_IT['name'] }}<span>{{ h_IT['comment'] }}</span></span></label></td><td> <input type="checkbox" name="{{ h_IT['name'] }}" id="{{ h_IT['name'] }}" {% if h_IT['name'] in hist_coll['it'] %} checked {% endif %}/></td>
+    </tr>
+  {% endfor %}
 {% endfor %}
 </div>
 </table>
-<input type="submit" name="btn" value="Configure">
-</form>
+</div>
 
-<form action="" method=post enctype=multipart/form-data>
-<input type="submit" name="btn" value="Edit histograms list">
+<div style="width:50%;position:absolute;left:0%">
+<table>
+<tr>
+<td><h2>TT</h2></td><td></td>
+</tr>
+{% for h_owner in existing_plots_TT %}
+  <td><h2>{{ h_owner }}</h2></td><td>
+  {% for h_TT in existing_plots_TT[h_owner] %}
+    <tr>
+        <td><label for="{{ h_TT['name'] }}"><span class="tooltip left" tabindex="0">{{ h_TT['name'] }}<span>{{ h_TT['comment'] }}</span></span>
+        </label></td><td> <input type="checkbox" name="{{ h_TT['name'] }}" id="{{ h_TT['name'] }}"  {% if h_TT['name'] in hist_coll['tt'] %} checked {% endif %}/></td>
+    </tr>
+  {% endfor %}
+{% endfor %}
+</table>
+
+<input class="btn" type="submit" name="btn" value="Configure">
 </form>
+<form action="" method=post enctype=multipart/form-data>
+<input class="btn" type="submit" name="btn" value="Edit histograms list">
+</form>
+</div>
+
 </div>
