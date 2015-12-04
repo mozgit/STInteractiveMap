@@ -31,22 +31,23 @@ NameList = pickle.load(f)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    email = request.form['email']
-    users = get_users()
-    if email in users:
-        if request.form['password'] == users[email]['password']:
-            user = User()
-            user.id = email
-            flask_login.login_user(user)
-            if request.form['wantsurl']:
-                #print "*"*100
-                #request.form['wantsurl']
-                #print "*"*100
-                return redirect(request.form['wantsurl'])
-                
-            else:
-                #print "F"*100
-                return redirect(url_for('.hello'))
+    if request.method == 'POST':
+        email = request.form['email']
+        users = get_users()
+        if email in users:
+            if request.form['password'] == users[email]['password']:
+                user = User()
+                user.id = email
+                flask_login.login_user(user)
+                if request.form['wantsurl']:
+                    #print "*"*100
+                    #request.form['wantsurl']
+                    #print "*"*100
+                    return redirect(request.form['wantsurl'])
+                    
+                else:
+                    #print "F"*100
+                    return redirect(url_for('.hello'))
     return render_template('Login.html', wantsurl=url_for('hello'))
 
 @app.route('/protected')
