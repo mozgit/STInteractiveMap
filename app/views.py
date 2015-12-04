@@ -43,11 +43,11 @@ def login():
                     #print "*"*100
                     #request.form['wantsurl']
                     #print "*"*100
-                    return redirect(request.form['wantsurl'])
+                    return redirect(url_for('edit'))
                     
                 else:
                     #print "F"*100
-                    return redirect(url_for('.hello'))
+                    return redirect(url_for('hello'))
     return render_template('Login.html', wantsurl=url_for('hello'))
 
 @app.route('/protected')
