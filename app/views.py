@@ -143,7 +143,7 @@ def edit():
                     if mp.owner not in existing_plots_IT:
                         existing_plots_IT[mp.owner]=[]
                     existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-            return redirect(url_for('edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+            return render_template('Edit.html', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT)
 
         if request.form['btn'] == 'Remove':
             for mp in MappedPlot.objects.all():
@@ -164,7 +164,7 @@ def edit():
                     if mp.owner not in existing_plots_IT:
                         existing_plots_IT[mp.owner]=[]
                     existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-            return redirect(url_for('edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+            return render_template('Edit.html', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT)
 
         if request.form['btn'] == 'Assign':
             for mp in MappedPlot.objects.all():
@@ -201,7 +201,7 @@ def edit():
                     if mp.owner not in existing_plots_IT:
                         existing_plots_IT[mp.owner]=[]
                     existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-            return redirect(url_for('edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+            return render_template('Edit.html', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT)
 
 
         if request.form['btn'] == 'Remove all':
@@ -222,7 +222,7 @@ def edit():
                     if mp.owner not in existing_plots_IT:
                         existing_plots_IT[mp.owner]=[]
                     existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-            return redirect(url_for('edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+            return render_template('Edit.html', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT)
 
         if request.form['btn'] == 'Change user':
             existing_plots_IT = {}
