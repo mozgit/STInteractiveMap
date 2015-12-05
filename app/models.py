@@ -61,6 +61,11 @@ class MappedPlot(db.Document):
     def __unicode__(self):
         return self.name
 
+    #def change_owner(self, name):
+    #    self.owner = name
+    #    return True
+
+
     def add_to_detector(self):
         global coll_it_d
         global coll_tt_d

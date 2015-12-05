@@ -63,6 +63,8 @@ def add_file(filename, prefix="", username="anonimous", comment=""):
     global collection
     global it_d
     global tt_d
+    tt_d = {}
+    it_d = {}
     minihistos = {'it':{}, 'tt':{}}
     if filename.rsplit('.', 1)[1] == 'pkl':
         if "TT" in filename:

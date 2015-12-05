@@ -143,7 +143,7 @@ def edit():
                     if mp.owner not in existing_plots_IT:
                         existing_plots_IT[mp.owner]=[]
                     existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-            return redirect(url_for('.edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+            return redirect(url_for('edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
 
         if request.form['btn'] == 'Remove':
             for mp in MappedPlot.objects.all():
@@ -164,7 +164,45 @@ def edit():
                     if mp.owner not in existing_plots_IT:
                         existing_plots_IT[mp.owner]=[]
                     existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-            return redirect(url_for('.edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+            return redirect(url_for('edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+
+        if request.form['btn'] == 'Assign':
+            for mp in MappedPlot.objects.all():
+                if mp.__unicode__() in request.form:
+                    if request.form[mp.__unicode__()] == 'on':
+                        #print "Changing user from "+mp.owner+" to "+flask_login.current_user.id
+                        #mp.change_owner(name = flask_login.current_user.id)
+                        #mp.update(owner, flask_login.current_user.id)
+                        mp2 = MappedPlot(
+                            name = mp.name,
+                            owner = flask_login.current_user.id,
+                            dtype = mp.dtype,
+                            body = mp.body,
+                            h_props = mp.h_props,
+                            comment = mp.comment)
+                        try:
+                            MappedPlot.objects.get(name=mp.__unicode__()).delete()
+                            mp2.save()
+                            print mp2.name+"  Assigned to "+mp2.owner
+                        except:
+                            print "Unable to reassign document"
+
+
+
+            #collection = Normalize_Colours(coll_tt_d, coll_it_d)
+            existing_plots_IT = {}
+            existing_plots_TT = {}
+            for mp in MappedPlot.objects.all():
+                if mp.dtype == 'TT':
+                    if mp.owner not in existing_plots_TT:
+                        existing_plots_TT[mp.owner]=[]
+                    existing_plots_TT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
+                if mp.dtype == 'IT':
+                    if mp.owner not in existing_plots_IT:
+                        existing_plots_IT[mp.owner]=[]
+                    existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
+            return redirect(url_for('edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+
 
         if request.form['btn'] == 'Remove all':
             for mp in MappedPlot.objects.all():
@@ -184,7 +222,7 @@ def edit():
                     if mp.owner not in existing_plots_IT:
                         existing_plots_IT[mp.owner]=[]
                     existing_plots_IT[mp.owner].append({'name':mp.__unicode__(),'comment':mp.comment})
-            return redirect(url_for('.edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
+            return redirect(url_for('edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT))
 
         if request.form['btn'] == 'Change user':
             existing_plots_IT = {}
