@@ -63,8 +63,11 @@ def add_file(filename, prefix="", username="anonimous", comment=""):
     global collection
     global it_d
     global tt_d
-    tt_d = {}
-    it_d = {}
+    for mp in MappedPlot.objects.all():
+        print mp.remove_from_detector()
+
+    #tt_d = {}
+    #it_d = {}
     minihistos = {'it':{}, 'tt':{}}
     if filename.rsplit('.', 1)[1] == 'pkl':
         if "TT" in filename:
@@ -100,6 +103,6 @@ def add_file(filename, prefix="", username="anonimous", comment=""):
     print it_d
     save_to_db(tt_d, histos, username, comment)
     save_to_db(it_d, histos, username, comment)
-    tt_d = {}
-    it_d = {}    
+    #tt_d = {}
+    #it_d = {}    
     return 

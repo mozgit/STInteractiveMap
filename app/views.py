@@ -82,7 +82,9 @@ def configure():
             #return redirect(url_for('.edit', existing_plots_TT = existing_plots_TT, existing_plots_IT = existing_plots_IT, hist_coll = histos))
         if request.form['btn'] == 'Configure':
             for mp in MappedPlot.objects.all():
-                mp.remove_from_detector()
+                #print "Trying to remove "+mp.__unicode__()+" from detector"
+                print mp.remove_from_detector()
+                #print mp.__unicode__()+" removed from detector"
                 if mp.__unicode__() in request.form:
                     if request.form[mp.__unicode__()] == 'on':
                         if not mp.is_loaded():
