@@ -21,6 +21,7 @@ pip install Flask-Login
 - 
 ```
 git clone http://root.cern.ch/git/root.git
+cd root
 git tag -l
 git checkout -b v5-34-32 v5-34-32
 ./configure --enable-soversion --all
