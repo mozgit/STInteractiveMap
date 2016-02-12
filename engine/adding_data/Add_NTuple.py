@@ -17,7 +17,7 @@ def SniffInfo(f, dictionary, names, prefix = ""):
             #Here we deal with module-based binning.
             orig_histo_name = element_name
             try:
-                element_name = orig_histo_name.replace('-','_').split('_')[1] # parse histogram name for ST element name
+                element_name = orig_histo_name.replace('-','_').split('_')[-1] # parse histogram name for ST element name
             except:
                 pass
             extracted_sector_names = [element_name]
@@ -29,7 +29,7 @@ def SniffInfo(f, dictionary, names, prefix = ""):
                 for sector_name in names['ITNames']:
                     if sector_name == name[len(name) - len(sector_name):]:
                         #naming_schema = 'IT_'+re.sub(sector_name,'',name)
-                        naming_schema = 'IT_'+prefix+"_"+orig_histo_name.split('_')[0]
+                        naming_schema = 'IT_'+prefix+"_"+orig_histo_name.replace("_"+ orig_histo_name.replace('-','_').split('_')[-1], "")
                         if naming_schema not in dictionary.keys():
                             dictionary[naming_schema] = {}
                         dictionary[naming_schema][sector_name] = f.Get(orig_histo_name)
@@ -37,7 +37,8 @@ def SniffInfo(f, dictionary, names, prefix = ""):
                 for sector_name in names['TTNames']:
                     if sector_name == name[len(name) - len(sector_name):]:
                         #naming_schema = 'TT_'+re.sub(sector_name,'',name)
-                        naming_schema = 'TT_'+prefix+"_"+orig_histo_name.split('_')[0]
+
+                        naming_schema = 'TT_'+prefix+"_"+orig_histo_name.replace("_"+ orig_histo_name.replace('-','_').split('_')[-1], "")
                         if naming_schema not in dictionary.keys():
                             dictionary[naming_schema] = {}
                         dictionary[naming_schema][sector_name] = f.Get(orig_histo_name)
@@ -61,7 +62,7 @@ def SniffInfo(f, dictionary, names, prefix = ""):
 #    #    output.close()
 #    return dictionary
 
-def Add_NTuple(ntuple, it_d, tt_d,hist_coll, prefix="", username="anonimuos"):
+def Add_NTuple(ntuple, it_d, tt_d,hist_coll, prefix="", username="anonimuos",opt_stats_mode = "emr"):
     #if not os.path.exists("engine/adding_data/pickle"):
     #    os.system("mkdir engine/adding_data/pickle")
     nf = open('engine/NameList.pkl')
@@ -77,13 +78,13 @@ def Add_NTuple(ntuple, it_d, tt_d,hist_coll, prefix="", username="anonimuos"):
             #TT_hists = pickle.load(f)
             #if h not in hist_coll['tt']:
             #    hist_coll['tt'].append(h)
-            Add_Histograms(tt_d, dictionary[h_name], h_name, hist_coll, username)
+            Add_Histograms(tt_d, dictionary[h_name], h_name, hist_coll, username, opt_stats_mode)
             #os.system("rm engine/adding_data/pickle/"+h+".pkl")
         if h_name[0] == 'I':
             #f = open('engine/adding_data/pickle/'+h+".pkl")
             #IT_hists = pickle.load(f)
             #if h not in hist_coll['it']:
             #    hist_coll['it'].append(h)
-            Add_Histograms(it_d, dictionary[h_name], h_name, hist_coll, username)
+            Add_Histograms(it_d, dictionary[h_name], h_name, hist_coll, username, opt_stats_mode)
             #os.system("rm engine/adding_data/pickle/"+h+".pkl")
     return

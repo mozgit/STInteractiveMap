@@ -7,7 +7,7 @@ from engine.detectors.CreateDetectors import *
 This function add histograms to detector.
 """
 
-def Add_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}}, username="anonimuos"):
+def Add_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}}, username="anonimuos", opt_stats_mode = "emr"):
     """ Adds a plot for every sector to the detector dictionary
 
     Inputs:
@@ -31,14 +31,14 @@ def Add_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}},
     for i, k in enumerate(hist_set):
         p_name = Parse_Name(k)
         if k in NameList['TTNames']:
-            det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k, username=username)
+            det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k, username=username, opt_stats_mode=opt_stats_mode)
             if hist_name not in hist_coll['tt']:
                 hist_coll['tt'][hist_name]=[]
             for pr in det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]["properties"]:
                 if pr not in hist_coll['tt'][hist_name]:
                     hist_coll['tt'][hist_name].append(pr)
         if k in NameList['ITNames']:
-            det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k, username=username)
+            det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k, username=username, opt_stats_mode=opt_stats_mode)
             if hist_name not in hist_coll['it']:
                 hist_coll['it'][hist_name]=[]
             for pr in det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]["properties"]:

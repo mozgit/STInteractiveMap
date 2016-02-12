@@ -59,7 +59,7 @@ def save_to_db(or_det, histos, username="anonimous", comment=""):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-def add_file(filename, prefix="", username="anonimous", comment=""):
+def add_file(filename, prefix="", username="anonimous", comment="", opt_stats_mode="emr"):
     global collection
     global it_d
     global tt_d
@@ -73,17 +73,17 @@ def add_file(filename, prefix="", username="anonimous", comment=""):
         if "TT" in filename:
             pickle_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             hist_name = filename.rsplit('.', 1)[0]
-            Add_Pkl(tt_d, pickle_file, hist_name,minihistos, username)
+            Add_Pkl(tt_d, pickle_file, hist_name,minihistos, username, opt_stats_mode)
             collection = Normalize_Colours(tt_d, it_d)
 
         if "IT" in filename:
             pickle_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             hist_name = filename.rsplit('.', 1)[0]
-            Add_Pkl(it_d, pickle_file, hist_name,minihistos, username)
+            Add_Pkl(it_d, pickle_file, hist_name,minihistos, username, opt_stats_mode)
             collection = Normalize_Colours(tt_d, it_d)
 
     if filename.rsplit('.', 1)[1] == 'root':
-        Add_NTuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), it_d, tt_d,minihistos, prefix, username)
+        Add_NTuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), it_d, tt_d,minihistos, prefix, username, opt_stats_mode)
         collection = Normalize_Colours(tt_d, it_d)
     if filename.rsplit('.', 1)[1] == 'zip':
         file_address = os.path.join(app.config['UPLOAD_FOLDER'], filename)

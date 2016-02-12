@@ -122,6 +122,10 @@ def edit():
             files = request.files.getlist("file[]")
             prefix = "".join(c for c in request.form['text'] if c.isalnum())+"::"+flask_login.current_user.id
             comment = request.form['comment']
+            opt_stats = False
+            if "opt_stats" in request.form:
+                if request.form["opt_stats"] == True:
+                    opt_stats = "emr"
             #print comment
             for file in files:
                 if file and allowed_file(file.filename):
@@ -130,7 +134,7 @@ def edit():
                     file.save(file_address)
                     #print "*"*100
                     #print "Adding file with owner "+flask_login.current_user.id
-                    add_file(filename, prefix, flask_login.current_user.id, comment)
+                    add_file(filename, prefix, flask_login.current_user.id, comment, opt_stats)
                     #print "*"*100
                     #print "Added file with owner "+flask_login.current_user.id                    
                     os.system("rm "+file_address)
@@ -269,15 +273,23 @@ def hello():
     global collection
     global histos
     if request.method == 'POST':
+        print json.dumps(Drawing_mode,sort_keys=True, indent=4)
         for m in ['IT_hist', 'TT_hist','IT_prop', 'TT_prop']:
+            try:
+                print request.form[m]
+            except:
+                print "Nothing in rf for "+m
+                pass
             try:
                 Drawing_mode[m]=request.form[m]
             except:
+                print "Here is a problem with "+m
                 pass
+        print json.dumps(Drawing_mode,sort_keys=True, indent=4)
         return render_template('index.html', coll_tt = coll_tt_d, coll_it=coll_it_d, dm = Drawing_mode, collections = collection, hist_coll = histos, tt = g_tt_d, it = g_it_d)
     collection = Retrieve_Collection(histos)
     #collection = Normalize_Colours(coll_tt_d, coll_it_d)
-    Drawing_mode = {'TT_hist':'', 'IT_hist':'','TT_prop':'', 'IT_prop':''}
+    #Drawing_mode = {'TT_hist':'', 'IT_hist':'','TT_prop':'', 'IT_prop':''}
     #print json.dumps(collection,sort_keys=True, indent=4)
     #print json.dumps(histos,sort_keys=True, indent=4)
     return render_template('index.html', coll_tt = coll_tt_d, coll_it=coll_it_d, dm = Drawing_mode, collections = collection, hist_coll = histos, tt = g_tt_d, it = g_it_d)
@@ -290,6 +302,8 @@ def Detector(d):
     if d in NameList['ITNames']: 
         p_name = Parse_Name(d)
         return render_template('Sector.html', dtype = "IT", name = d, sec=p_name, det = coll_it_d)
+    if d == 'test':
+        return render_template('Test.html')
     return redirect(url_for('hello'))
 
 
