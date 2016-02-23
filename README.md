@@ -1,7 +1,7 @@
-ST interactive monitor
+ST interactive map
 -------------------
 
-Runing interactive monitor:
+Runing interactive map:
 - Install mongodb (http://docs.mongodb.org/manual/installation/). If you use mac, you may simply type:
 ```
 brew update
@@ -35,7 +35,7 @@ source thisroot.sh
 ```
 mongod
 ```
-- Run monitor in another terminal:
+- Run map in another terminal:
 ```
 python manage.py runserver
 ```
