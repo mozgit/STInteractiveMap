@@ -10,3 +10,6 @@ TrackMonitors/x86_64*/**
 **/.svn
 **/.svn/**
 **/*.root
+static/plots/*
+*.png
+**/*.png
