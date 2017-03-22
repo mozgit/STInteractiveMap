@@ -1,0 +1,13 @@
+<!doctype html>
+<title>{{ name }}</title>
+  <center><h1>{{ name }}</h1></center>
+{% for h in det %}
+    <center><h2>{{ h }}</h2></center>
+    {% if dtype == "TT" %}
+    <center><img src="{{ url_for('static', filename = det[h][sec['layer']][sec['side']][sec['sector']]['Histograms'][h]['plot']) }}" ></center>
+    {% endif %}
+    {% if dtype == "IT" %}
+    <center><img src="{{ url_for('static', filename = det[h][sec['station']][sec['side']][sec['layer']][sec['sector']]['Histograms'][h]['plot']) }}" ></center>
+    {% endif %}
+    
+{% endfor %}

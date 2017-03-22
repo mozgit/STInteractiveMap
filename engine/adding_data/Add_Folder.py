@@ -3,7 +3,7 @@ from engine.module_based_naming.Alternative_Naming_Triggers import *
 from Add_NTuple import *
 from Add_Histograms import *
 
-def Add_Folder(folder_with_plots, it_d, tt_d,hist_coll):
+def Add_Folder(folder_with_plots, it_d, tt_d,hist_coll, username="anonimous"):
     files = os.listdir('static/'+folder_with_plots)
     it_pictures = {}
     tt_pictures = {}
@@ -53,9 +53,9 @@ def Add_Folder(folder_with_plots, it_d, tt_d,hist_coll):
     for histos in it_pictures:
         if histos not in hist_coll['it']:
             hist_coll['it'][histos]=[]
-        Add_Existing_Histograms(it_d, it_pictures[histos], histos,hist_coll)
+        Add_Existing_Histograms(it_d, it_pictures[histos], histos,hist_coll, username)
     for histos in tt_pictures:
         if histos not in hist_coll['tt']:
             hist_coll['tt'][histos]=[]
-        Add_Existing_Histograms(tt_d, tt_pictures[histos], histos,hist_coll)
+        Add_Existing_Histograms(tt_d, tt_pictures[histos], histos,hist_coll, username)
     return

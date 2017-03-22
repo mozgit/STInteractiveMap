@@ -6,7 +6,7 @@ from IT_info import *
 def create_TT():
     f = open('engine/NameList.pkl')
     NameList = pickle.load(f) 
-    TT = {}
+    TT = {'dtype':'TT'}
     layer = ['TTaU','TTaX','TTbV','TTbX']
     side = ['RegionA','RegionB','RegionC']
     for l in layer:
@@ -24,7 +24,7 @@ def create_TT():
 def create_IT():
     f = open('engine/NameList.pkl')
     NameList = pickle.load(f) 
-    IT = {}
+    IT = {'dtype':'IT'}
     station = ['IT1','IT2','IT3']
     side = ['ASide','CSide','Bottom','Top']
     layer = ['X1','X2','U','V']

@@ -1,0 +1,80 @@
+<!doctype html>
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+
+<!-- 
+<span class="tooltip" tabindex="0">наведи на меня (по центру) <span>Подсказка</span></span>
+<span class="tooltip left" tabindex="0">наведи на меня (влево) <span>Подсказка</span></span>
+<span class="tooltip right" tabindex="0">наведи на меня (вправо) <span>Подсказка</span></span>
+<span class="tooltip anim" tabindex="0">наведи на меня (с анимацией) <span>Подсказка</span></span>
+-->
+
+<title>Edit histograms list</title>
+<div style="width:100%">
+<h1>Remove histograms:</h1>
+<form action="" method=post enctype=multipart/form-data>
+<div style="width:50%;position:absolute;left:50%">
+
+<table>
+<tr>
+<td><h2>IT</h2></td><td></td>
+</tr>
+{% for h_owner in existing_plots_IT %}
+  <td><h2>{{ h_owner }}</h2></td><td>
+  {% for h_IT in existing_plots_IT[h_owner] %}
+    <tr>
+        <td><label for="{{ h_IT['name'] }}"><span class="tooltip left" tabindex="0">{{ h_IT['name'] }}<span>{{ h_IT['comment'] }}</span></span></label></td><td> <input type="checkbox" name="{{ h_IT['name'] }}" id="{{ h_IT['name'] }}"/>
+        </td>
+    </tr>
+  {% endfor %}
+{% endfor %}
+</div>
+</table>
+</div>
+
+<div style="width:50%;position:absolute;left:0%">
+
+<table>
+<tr>
+<td><h2>TT</h2></td><td></td>
+</tr>
+{% for h_owner in existing_plots_TT %}
+  <td><h2>{{ h_owner }}</h2></td><td>
+  {% for h_TT in existing_plots_TT[h_owner] %}
+    <tr>
+        <td><label for="{{ h_TT['name'] }}"><span class="tooltip left" tabindex="0">{{ h_TT['name'] }}<span>{{ h_TT['comment'] }}</span></span>
+        </label></td><td> <input type="checkbox" name="{{ h_TT['name'] }}" id="{{ h_TT['name'] }}"/></td>
+    </tr>
+  {% endfor %}
+{% endfor %}
+</div>
+</table>
+<input class="btn" type="submit" name="btn" value="Remove">
+<input class="btn" type="submit" name="btn" value="Remove all"><br />
+<!-- <input class="btn" type="submit" name="btn" value="Assign"><br /> -->
+Logged in as {{ current_user.id }}
+<input type="submit" name="btn" value="Change user">
+
+</form>
+
+<h1>Upload new File</h1>
+<form action="" method=post enctype=multipart/form-data>
+    <div style="width:50%;position:absolute;left:0%">
+    <p>
+    Type prefix (if you like):<br>
+    <input type="text" name="text" size="30" value="">
+    </p>
+    <p>
+    Prit stats on a histograms  <input type="checkbox" name="opt_stats" id="opt_stats"/>
+    <p><input type=file name="file[]" multiple=""></p>
+    <input class="btn" type="submit" name="btn" value="Upload">
+    </div>
+    <div style="width:50%;position:absolute;left:50%">
+    <textarea name="comment" rows="10" cols="50">Add comment (year, run condition e.t.c.) </textarea>
+    </div>
+</form>
+
+<div style="width:100%;height:2%;position:absolute;top:0%;left:0%;text-align:center;">
+ <a href="/configure">
+Back to configuration
+</a>
+</div>

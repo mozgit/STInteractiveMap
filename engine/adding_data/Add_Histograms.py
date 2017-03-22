@@ -2,11 +2,12 @@ import pickle
 import sys
 from Name_Parser import *
 from engine.histo_drawing.DefineHistogram import GetAPlot
+from engine.detectors.CreateDetectors import *
 """
 This function add histograms to detector.
 """
 
-def Add_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}}):
+def Add_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}}, username="anonimuos", opt_stats_mode = "emr"):
     """ Adds a plot for every sector to the detector dictionary
 
     Inputs:
@@ -21,27 +22,36 @@ def Add_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}})
     for i, k in enumerate(hist_set):
         p_name = Parse_Name(k)
         if k in NameList['TTNames']:
-            det[p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k)
+            det[hist_name]=create_TT()
+            break
+        if k in NameList['ITNames']:
+            det[hist_name]=create_IT()
+            break
+
+    for i, k in enumerate(hist_set):
+        p_name = Parse_Name(k)
+        if k in NameList['TTNames']:
+            det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k, username=username, opt_stats_mode=opt_stats_mode)
             if hist_name not in hist_coll['tt']:
                 hist_coll['tt'][hist_name]=[]
-            for pr in det[p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]["properties"]:
+            for pr in det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]["properties"]:
                 if pr not in hist_coll['tt'][hist_name]:
                     hist_coll['tt'][hist_name].append(pr)
         if k in NameList['ITNames']:
-            det[p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k)
+            det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]=GetAPlot(hist_set[k], histname = hist_name+"_"+k, username=username, opt_stats_mode=opt_stats_mode)
             if hist_name not in hist_coll['it']:
                 hist_coll['it'][hist_name]=[]
-            for pr in det[p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]["properties"]:
+            for pr in det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]["properties"]:
                 if pr not in hist_coll['it'][hist_name]:
                     hist_coll['it'][hist_name].append(pr)
-        sys.stdout.flush()
-        sys.stdout.write("Getting histograms for "+hist_name+":  "+str(i+1)+'/'+ str(len(hist_set))+' ('+ str(int(100*float(i+1)/float(len(hist_set))))+'%)\r')
+        #sys.stdout.flush()
+        #sys.stdout.write("Getting histograms for "+hist_name+":  "+str(i+1)+'/'+ str(len(hist_set))+' ('+ str(int(100*float(i+1)/float(len(hist_set))))+'%)\r')
     print ''
     print hist_name+': all done.'
     return 
 
 
-def Add_Existing_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}}):
+def Add_Existing_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 'tt':{}}, username = "anonimuos"):
     """ Adds already existing plot for every sector to the detector dictionary - needed for plots compiled elsewhere
 
     Inputs:
@@ -56,15 +66,15 @@ def Add_Existing_Histograms(det, hist_set, hist_name='hist',hist_coll={'it':{}, 
     for i, k in enumerate(hist_set):
         p_name = Parse_Name(k)
         if k in NameList['TTNames']:
-            det[p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]={'plot':hist_set[k], "init_properties":{},'properties':{}}
+            det[hist_name][p_name['layer']][p_name['side']][p_name['sector']]['Histograms'][hist_name]={'plot':hist_set[k], "owner":username, "init_properties":{},'properties':{}}
             if hist_name not in hist_coll['tt']:
                 hist_coll['tt'][hist_name]=[]
         if k in NameList['ITNames']:
-            det[p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]={'plot':hist_set[k], "init_properties":{} ,'properties':{}}
+            det[hist_name][p_name['station']][p_name['side']][p_name['layer']][p_name['sector']]['Histograms'][hist_name]={'plot':hist_set[k], "owner":username, "init_properties":{} ,'properties':{}}
             if hist_name not in hist_coll['it']:
                 hist_coll['it'][hist_name]=[]
-        sys.stdout.flush()
-        sys.stdout.write("Getting histograms for "+hist_name+":  "+str(i+1)+'/'+ str(len(hist_set))+' ('+ str(int(100*float(i+1)/float(len(hist_set))))+'%)\r')
+        #sys.stdout.flush()
+        #sys.stdout.write("Getting histograms for "+hist_name+":  "+str(i+1)+'/'+ str(len(hist_set))+' ('+ str(int(100*float(i+1)/float(len(hist_set))))+'%)\r')
     print ''
     print hist_name+': all done.'
     return 
